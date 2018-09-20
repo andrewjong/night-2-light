@@ -1,38 +1,30 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
 
-import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MyNavbarComponent } from './my-navbar/my-navbar.component';
-import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatGridListModule, MatCardModule, MatMenuModule, MatTableModule, MatPaginatorModule, MatSortModule } from '@angular/material';
-import { MyDashboardComponent } from './my-dashboard/my-dashboard.component';
-import { MyTableComponent } from './my-table/my-table.component';
+import {AppComponent} from './app.component';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from "@angular/router";
 import {AppRoutingModule} from "./app-routing-module";
+import {HomeComponent} from './home/home.component';
+import {FormsModule} from "@angular/forms";
+import {TableModule} from "primeng/table";
+import {HttpClientModule} from "@angular/common/http";
+import {ButtonModule, DialogModule, InputTextModule} from "primeng/primeng";
 
 @NgModule({
   declarations: [
     AppComponent,
-    MyNavbarComponent,
-    MyDashboardComponent,
-    MyTableComponent
+    HomeComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    LayoutModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatIconModule,
-    MatListModule,
-    MatGridListModule,
-    MatCardModule,
-    MatMenuModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
+    FormsModule,
+    TableModule,
+    HttpClientModule,
+    InputTextModule,
+    DialogModule,
+    ButtonModule,
     AppRoutingModule
   ],
   exports: [RouterModule],
