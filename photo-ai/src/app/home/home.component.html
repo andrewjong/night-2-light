@@ -1,11 +1,22 @@
   <p>
     home works!
   </p>
+  <!--This is string interpolation, an easy way of displaying text from a variable. It should automatically detect changes to the variable-->
   <p>
     {{stringinterpolation}}
   </p>
 
+  <!--Ng for example-->
+  <li *ngFor="let hero of heroes">
+    {{ hero }}
+  </li>
+  <br>
+  <!--click example, toggles the toggletable() method-->
+  <button pButton type="button" label="Click" (click)="toggletable()"></button>
 
+<!--Ng if example. Displays the div in the dom if the statement is true-->
+<div *ngIf="tabletoggled">
+  <br>
   <p-dialog header="Car Details" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true" [closable]="true" [width]="300">
     <div class="ui-g ui-fluid" *ngIf="car">
       <div class="ui-g-4"><label for="vin">Vin</label></div>
@@ -50,3 +61,4 @@
       </div>
     </ng-template>
   </p-table>
+</div>

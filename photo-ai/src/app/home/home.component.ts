@@ -30,6 +30,8 @@ export class HomeComponent implements OnInit {
   cars: Car[];
 
   cols: any[];
+  tabletoggled = false;
+  heroes = ['Windstorm', 'Bombasto', 'Magneta', 'Tornado'];
 
   constructor(private carService: CarService) { }
 
@@ -77,5 +79,11 @@ export class HomeComponent implements OnInit {
 
   findSelectedCarIndex(): number {
     return this.cars.indexOf(this.selectedCar);
+  }
+
+  toggletable() {
+    this.tabletoggled = !this.tabletoggled
+    if(this.tabletoggled) this.stringinterpolation = 'You toggled the table'
+    else this.stringinterpolation = 'his this is string interpolation'
   }
 }
