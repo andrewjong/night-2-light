@@ -1,4 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: 'Roboto', sans-serif; }
+html, body { height: 100%; background:#363a43;}
+body { margin: 0; font-family: 'Roboto', sans-serif; color: #7ea27f; padding:0}
+
+h1 {
+    text-align:center;
+}
+footer { 
+    background-color: #1e2024;
+    text-align:center;
+}

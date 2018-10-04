@@ -1,0 +1,18 @@
+footer {
+    padding: 2% 0;
+}
+
+p-toolbar {
+    position: absolute;
+    top:0%;
+    left: 0%;
+}
+
+.photo-container {
+    overflow: hidden;
+    position: relative;
+}
+
+.photo {
+    position:relative;
+}

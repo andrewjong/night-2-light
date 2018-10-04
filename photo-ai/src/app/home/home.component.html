@@ -1,0 +1,40 @@
+<h1>Photo Editor</h1>
+<div class="p-grid">
+    <div class="photo-container p-lg-6 p-md-6 p-col-12">
+      <img class="photo p-col-12" src="https://ih1.redbubble.net/image.360944662.9208/flat,1000x1000,075,f.jpg">
+      <p-fileUpload class="p-col-12" mode="basic" name="image[]" url="" accept="image/*" auto="auto" (onSelect)="onSelectImage($event.files)">
+        <ng-template pTemplate="toolbar">
+        </ng-template>
+        <ng-template let-file pTemplate="file">
+        </ng-template>
+      </p-fileUpload>
+      <button class="p-col-2" pButton type="button" label="Take Photo" icon="pi pi-video"></button>
+
+    </div>
+    
+    <div class="photo-container p-lg-6 p-md-6 p-col-12">
+      <img class="photo p-col-12"  src="https://ih1.redbubble.net/image.360944662.9208/flat,1000x1000,075,f.jpg">
+      <p-toolbar>
+          <div class="ui-toolbar-group-left">
+            <button pButton type="button" label="New" icon="pi pi-plus"></button>
+            <button pButton type="button" label="Upload" icon="pi pi-upload" class="ui-button-success"></button>
+            <i class="pi pi-bars"></i>
+            <p-splitButton label="Save" icon="pi pi-check" [model]="items" styleClass="ui-button-warning"></p-splitButton>
+          </div>
+          <div class="ui-toolbar-group-right">
+              <button pButton type="button" label="New" icon="pi pi-plus"></button>
+              <button pButton type="button" label="Upload" icon="pi pi-upload" class="ui-button-success"></button>
+              <i class="pi pi-bars"></i>
+              <p-splitButton label="Save" icon="pi pi-check" [model]="items" styleClass="ui-button-warning"></p-splitButton>
+            </div>
+        </p-toolbar>
+      <p-button class="p-col-12" icon="pi pi-download" label="Download"></p-button>
+    </div>
+</div>
+
+
+<footer class="p-col-12">&copy; 2018 JAVV</footer>
+    
+    
+
+    
