@@ -6,6 +6,10 @@ p-grid {
     align-items:center;
 }
 
+.uploadDownload {
+    display:block;
+}
+
 footer {
     padding: 2% 0;
     position:absolute;
@@ -13,7 +17,6 @@ footer {
 }
 
 img {
-    max-height:800px;
     object-fit: scale-down;
     background-color:#333333;
 }
