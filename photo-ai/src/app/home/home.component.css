@@ -1,11 +1,21 @@
-footer {
-    padding: 2% 0;
+p-toolbar button {
+    margin: 5px;
+}
+p-grid {
+    display:flex;
+    align-items:center;
 }
 
-p-toolbar {
-    position: absolute;
-    top:0%;
-    left: 0%;
+footer {
+    padding: 2% 0;
+    position:absolute;
+    bottom:0;
+}
+
+img {
+    max-height:800px;
+    object-fit: scale-down;
+    background-color:#333333;
 }
 
 .photo-container {
@@ -16,3 +26,5 @@ p-toolbar {
 .photo {
     position:relative;
 }
+
+

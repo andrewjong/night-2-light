@@ -12,6 +12,7 @@ import {FileUploadModule} from 'primeng/fileupload';
 import {ButtonModule} from 'primeng/button';
 import {ToolbarModule} from 'primeng/toolbar';
 import {SplitButtonModule} from 'primeng/splitbutton';
+import {WebcamModule} from 'ngx-webcam';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import {SplitButtonModule} from 'primeng/splitbutton';
     FileUploadModule,
     ButtonModule,
     ToolbarModule,
-    SplitButtonModule
+    SplitButtonModule,
+    WebcamModule
   ],
   exports: [RouterModule],
   providers: [],
