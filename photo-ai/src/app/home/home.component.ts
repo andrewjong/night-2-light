@@ -7,12 +7,38 @@ import {WebcamImage} from "ngx-webcam";
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
+export class HomeComponent implements OnInit {
+  url:string = '';
+  showWebcam: boolean = false;
+  public webcamImage: WebcamImage = null;
+  private trigger: Subject<void> = new Subject<void>();
 
-
-export class HomeComponent implements OnInit {  
-  
   constructor() { }
   ngOnInit() {}
 
+  onSelectFile(event) { // called each time file input changes
+    if (event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0]); // read file as data url
+      reader.onload = (event) => { // called once readAsDataURL is completed
+        this.url = event.target.result;
+      }
+    }
+  }
 
+  toggleWebcam() {
+    this.showWebcam = !this.showWebcam
+  }
+
+  public get triggerObservable(): Observable<void> {
+    return this.trigger.asObservable();
+  }
+
+  public triggerSnapshot(): void {
+    this.trigger.next();
+    this.showWebcam = !this.showWebcam;
+  }
+  public handleImage(webcamImage: WebcamImage): void {
+    this.url = webcamImage.imageAsDataUrl
+  }
 }
