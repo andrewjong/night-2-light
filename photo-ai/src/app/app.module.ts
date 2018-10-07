@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LayoutModule } from '@angular/cdk/layout';
 import {RouterModule} from "@angular/router";
 import {AppRoutingModule} from "./app-routing-module";
 import { HomeComponent } from './home/home.component';
@@ -21,7 +20,6 @@ import {WebcamModule} from 'ngx-webcam';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    LayoutModule,
     AppRoutingModule,
     FileUploadModule,
     ButtonModule,
