@@ -1,52 +1,53 @@
-#download-btn {
-    display:block;
-    margin:10px auto 0;
-}
-
 #container {
     overflow-x:hidden;
     position:relative;
 }
 
-#main {
-    font-size: 1rem;
-    padding-bottom: 50px;
-}
+        #main {
+            font-size: 1rem;
+            padding-bottom: 50px;
+        }
 
-h1 {
-    text-align:center;
-}
-
-p-toolbar button {
-    margin: 5px;
-}
-p-grid {
-    display:flex;
-    align-items:center;
-    overflow:auto;
-}
-
-img, webcam {
-    object-fit: scale-down;
-    height:80vh;
-    margin: 0 auto;
-}
-
-.edit-container {
-    position: relative;
-}
-
-.photo-container {
-    position:relative;
-    height:80vh;
-    display:block;
-    object-fit: scale-down;
-    background-color:#333333;
-}
+            h1 {
+                text-align:center;
+            }
 
 
-#footer { 
-    background-color: #1e2024;
-    text-align:center;
-    font-size:1.3rem;
-}
+                #swipe-area {
+                    display:flex;
+                    align-items:center;
+                    overflow:auto;
+                }
+
+                .edit-container {
+                    position: relative;
+                }
+
+                    p-toolbar button {
+                        margin: 5px;
+                    }
+
+
+                    .photo-container {
+                        position:relative;
+                        height:80vh;
+                        display:block;
+                        background-color:#333333;
+                    }
+
+                        img, webcam {
+                            object-fit: scale-down;
+                            height:80vh;
+                            margin: 0 auto;
+                        }
+
+                #download-btn {
+                    display:block;
+                    margin:10px auto 0;
+                }
+
+        #footer { 
+            background-color: #1e2024;
+            text-align:center;
+            font-size:1.3rem;
+        }
