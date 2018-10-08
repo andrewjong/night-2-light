@@ -1,44 +1,51 @@
-<h1>Photo Editor</h1>
-<div id="swipe-area" class="p-grid">
+<div id="container">
+  <div id="main">
 
-  <div class="photo-container p-md-6 p-col-12">
-    <p-toolbar class="p-lg-6">
-      <div class="ui-toolbar-group-left">
-        <button pButton type="button" label="Use Webcam" icon="pi pi-video" (click)="toggleWebcam()" *ngIf="!showWebcam"></button>
-        <button pButton type="button" label="Stop Webcam" icon="pi pi-times"  class="ui-button-danger" (click)="toggleWebcam()" *ngIf="showWebcam"></button>
-        <button pButton type="button" label="Take pic" class="pi" (click)="triggerSnapshot()" *ngIf="showWebcam"></button>
-        <button pButton type="button" label="Upload" icon="pi pi-upload" (click)="fileInput.click()" *ngIf="!showWebcam"></button>
-      </div>
-    </p-toolbar>
+      <h1>Photo Editor</h1>
+        <div id="swipe-area" class="p-grid ui-g">
 
-    <img class="photo p-col-12" [src]="url" *ngIf="url !=='' && !showWebcam">
-    <webcam [height]="600" [width]="600" [trigger]="triggerObservable" (imageCapture)="handleImage($event)"
-            class="photo p-col-12" *ngIf="showWebcam"></webcam>
+          <div class="edit-container p-md-6 p-col-12">
+            <p-toolbar class="p-lg-6">
+              <div class="ui-toolbar-group-left">
+                <button pButton type="button" label="Use Webcam" icon="pi pi-video" (click)="toggleWebcam()" *ngIf="!showWebcam"></button>
+                <button pButton type="button" label="Stop Webcam" icon="pi pi-times"  class="ui-button-danger" (click)="toggleWebcam()" *ngIf="showWebcam"></button>
+                <button pButton type="button" label="Take pic" class="pi" (click)="triggerSnapshot()" *ngIf="showWebcam"></button>
+                <button pButton type="button" label="Upload" icon="pi pi-upload" (click)="fileInput.click()" *ngIf="!showWebcam"></button>
+              </div>
+            </p-toolbar>
 
-    <button pButton type="button" label="Upload" icon="pi pi-upload"></button>
+            <div class= "photo-container p-col-12">
+              <img class="p-col-12" [src]="url" *ngIf="url !=='' && !showWebcam">
+              <webcam [height]="600" [width]="600" [trigger]="triggerObservable" (imageCapture)="handleImage($event)"
+                    class="p-col-12" *ngIf="showWebcam"></webcam>
+            </div>
+            <!-- <button class="uploadDownload" pButton type="button" label="Upload" icon="pi pi-upload"></button> -->
 
-  </div>
+          </div>
 
-  <div class="photo-container p-lg-6 p-md-6 p-col-12">
-    <p-toolbar class="p-col-6">
-      <div class="ui-toolbar-group-left">
-        <button pButton type="button" label="Convert" icon="pi pi-caret-up"></button>
-        <button pButton type="button" label="Crop"></button>
-        <p-splitButton type="button" label="Edit" icon="pi pi-pencil" [model]="items"></p-splitButton >
-      </div>
-    </p-toolbar>
+          <div class="edit-container p-lg-6 p-md-6 p-col-12">
+              <p-toolbar class="p-col-6">
+                  <div class="ui-toolbar-group-left">
+                    <button pButton type="button" label="Convert" icon="pi pi-caret-up"></button>
+                    <button pButton type="button" label="Crop"></button>
+                    <p-splitButton type="button" label="Edit" icon="pi pi-pencil" [model]="items"></p-splitButton >
+                  </div>
+              </p-toolbar>
 
-    <img class="photo p-col-12" [src]="url" *ngIf="url !== ''">
-    <a [href]="url" download="procImg" target="_self" pButton type="button" class="ui-button-warning"  icon="pi pi-download" *ngIf="url !==''" label="Download" ></a>
-  </div>
+              <div class= "photo-container p-col-12">
+                  <img class="p-col-12" [src]="url" *ngIf="url !== ''">
+              </div>
+          </div>
 
-  <input
-    style="display: none"
-    type="file" name="pic" accept="image/*" (change)="onSelectFile($event)"
-    #fileInput>
+          <a id="download-btn" [href]="url" download="procImg" target="_self" pButton type="button" class="ui-button-warning"  icon="pi pi-download" *ngIf="url !==''" label="Download" ></a>
+          <input
+            style="display: none"
+            type="file" name="pic" accept="image/*" (change)="onSelectFile($event)"
+            #fileInput>
+        </div>
 
+    </div>
+
+    <footer id="footer" class="p-col-12">&copy; 2018 JAVV</footer>
 </div>
-    
-    
 
-    
