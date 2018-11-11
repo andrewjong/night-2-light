@@ -11,11 +11,13 @@ import {ButtonModule} from 'primeng/button';
 import {ToolbarModule} from 'primeng/toolbar';
 import {SplitButtonModule} from 'primeng/splitbutton';
 import {WebcamModule} from 'ngx-webcam';
+import { ImageEditorComponent } from './image-editor/image-editor.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    ImageEditorComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,9 @@
+<div class="canvas-container">
+  <canvas id="image-view" width="1600px" height="700px" ></canvas>
+</div>
+<input type="file" accept="image/*" (change)="previewFile($event)"/>
+<input id="save-btn" type="button" value = "Save" (click)="saveFile($event)" />
+<input id="crop-btn" type="button" value = "Crop" (click)="showCropArea($event)" />
+<input id="apply-btn" type="button" value = "Apply Crop" (click)="crop($event)" />
+<input id="undo-btn" type="button" value = "Undo" (click)="undo($event)" />
+<input id="remove-btn" type="button" value = "Remove" (click)="remove($event)" />
