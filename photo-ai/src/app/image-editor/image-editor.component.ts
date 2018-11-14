@@ -20,6 +20,15 @@ export class ImageEditorComponent implements OnInit {
    
   }
 
+
+
+
+
+
+
+
+
+
   /**
    * This will allow to instantiate the canvas and will apply zoom onto canvas.
    * Left means a certain amount of pixels from the left of the object or the canvas.
@@ -31,7 +40,6 @@ export class ImageEditorComponent implements OnInit {
       selectionColor: 'blue',
       selectionLineWidth: 5
       });
-    console.log(JSON.stringify(this.canvas.width));
     this.mainImageExists = false;
     this.canvas.on('mouse:wheel', function(opt) {
         var delta = opt.e.deltaY;
@@ -45,6 +53,15 @@ export class ImageEditorComponent implements OnInit {
         opt.e.stopPropagation();
       });
     }
+
+
+
+
+
+
+
+
+
 
   /**
    * This will allow the image to show on the canvas after uploading
@@ -80,6 +97,12 @@ export class ImageEditorComponent implements OnInit {
     }
 
 
+
+
+
+
+
+
   /**
    * This will set the main image to be edited on
    * @param image 
@@ -88,6 +111,11 @@ export class ImageEditorComponent implements OnInit {
     this.mainImage = image; 
     return true;
   }
+
+
+
+
+
 
 
   /**
@@ -99,6 +127,13 @@ export class ImageEditorComponent implements OnInit {
       saveAs(blob, "editedIMG.png");
     });
   }
+
+
+
+
+
+
+
 
   /**
    * This will show the applyable crop area
@@ -112,7 +147,6 @@ export class ImageEditorComponent implements OnInit {
       opacity: 0,
       originX: "left",
       originY: "top",
-      absolutePositioned: true
     });
     this.canvas.add(clippath);
     let canvasHere = this.canvas;
@@ -125,35 +159,41 @@ export class ImageEditorComponent implements OnInit {
     this.canvas.renderAll();
   }
   
+
+
+
+
+
+
+
+
   /**
    * This will apply the crop form the cropArea
    * @param event 
    */
   crop(event) {
     let mainImage =this.canvas.getObjects()[0];
-    let left = this.clipPath.left;
-    let top = this.clipPath.top;
-    let leftPos = this.clipPath.getBoundingRect()[0];
-    let topPos = this.clipPath.getBoundingRect()[1];
-  
+    let originOfMainX = this.mainImage.getCenterPoint().x;
+    let originOfMainY = this.mainImage.getCenterPoint().y;
+    let cropMainTop = this.clipPath.top - originOfMainY;
+    let cropMainLeft = this.clipPath.left - originOfMainX; 
+    console.log("This is the origin of the main image: " + this.mainImage.getCenterPoint());
+
+    //This is clipping where the origin is the center of the main image!
     let actualClipping = new fabric.Rect({
       width:300,
       height:300,
       originX: "left",
       originY: "top",
-      top: 0,
-      left: 0,
-      // absolutePositioned: true
+      top: cropMainTop,
+      left: cropMainLeft
     });
     console.log("actualClipping: " + JSON.stringify(actualClipping));
-    console.log("Left: " + actualClipping.left);
-    console.log("Top: " + actualClipping.top);
     mainImage.clipPath = actualClipping;
     this.canvas.remove(this.clipPath);
     this.canvas.remove(actualClipping);
     this.canvas.add(mainImage);
     this.canvas.renderAll();
-    console.log("After crop: " + JSON.stringify(mainImage));
   }
 
   /**
