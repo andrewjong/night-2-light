@@ -2,41 +2,48 @@
   <span class="material-icons">mood</span>
 </div>
 
+
+
+
 <div class="center">
-  <button id="upload-btn" (click)="uploadFile($event)">
-    <span class="material-icons">attach_file</span>
-  </button>
-  <input id="upload" type="file" accept="image/*" hidden="hidden" (change)="previewFile($event)"/>
-
-  <button id="convert-btn" value="Convert" >
-      <span class="material-icons">wb_sunny</span>
+    <button id="upload-btn" (click)="uploadFile($event)">
+      <span class="material-icons">attach_file</span>
     </button>
+    <input id="upload" type="file" accept="image/*" hidden="hidden" (change)="previewFile($event)"/>
 
-  <button id="save-btn" value="Save" (click)="saveFile($event)">
-    <span class="material-icons"><a id="save" download="editedImg">save</a></span>
-  </button>
+    <button id="convert-btn" value="Convert" >
+        <span class="material-icons">wb_sunny</span>
+      </button>
 
-
-  <button id="crop-btn" value="Crop" (click)="showCropArea($event)">
+    <button id="crop-btn" value="Crop" (click)="showCropArea($event)">
       <span class="material-icons">crop</span>
     </button>
 
-  <button id="apply-btn" value="Apply Crop" (click)="crop($event)">
-    <span class="material-icons">check</span>
-  </button>
-
-  <button id="undo-btn" value="Undo" (click)="undo($event)">
+    <button id="apply-btn" value="Apply Crop" (click)="crop($event)">
+      <span class="material-icons">check</span>
+    </button>
+    
+    <button id="undo-btn" value="Undo" (click)="undo($event)">
       <span class="material-icons">undo</span>
-  </button>
-
-  <button id="redo-btn" value="Redo" (click)="redo($event)">
+    </button>
+    
+    <button id="redo-btn" value="Redo" (click)="redo($event)">
       <span class="material-icons">redo</span>
-  </button>
-
-  <button id="remove-btn" value="Remove" (click)="remove($event)">
+    </button>
+    
+    <button id="remove-btn" value="Remove" (click)="remove($event)">
       <span class="material-icons">clear</span>
-  </button>
-</div>
+    </button>
+  </div>
+  
+
+
+
+  <div class="right">
+    <button id="save-btn" value="Save" (click)="saveFile($event)">
+      <span class="material-icons"><a id="save" download="editedImg">save</a></span>
+    </button>    
+  </div>
 
 <div class="canvas-container">
   <canvas id="image-view" width="1600px" height="700px" ></canvas>

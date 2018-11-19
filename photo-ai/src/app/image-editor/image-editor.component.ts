@@ -158,16 +158,21 @@ export class ImageEditorComponent implements OnInit {
       originX: "left",
       originY: "top",
     });
-    this.canvas.add(clippath);
     let canvasHere = this.canvas;
+    canvasHere.add(clippath);
+    canvasHere.centerObject(clippath);
+    canvasHere.setActiveObject(clippath);
+    clippath.setCoords();
+    canvasHere.renderAll();
     let newElement = this.canvas.getObjects().length -1;
-    this.clipPath = this.canvas.getObjects()[newElement];
-    this.clipPath.on('modified', function() {
-      console.log(JSON.stringify(this.getBoundingRect()));
-    });
-    this.canvas.setActiveObject(this.clipPath);
-    this.canvas.renderAll();
-  }
+    this.clipPath = clippath;
+
+   this.clipPath.on('modified', function() {
+        console.log(JSON.stringify(this));
+      });
+   
+    }
+  
   
 
 
@@ -185,18 +190,23 @@ export class ImageEditorComponent implements OnInit {
     let mainImage =this.canvas.getObjects()[0];
     let originOfMainX = this.mainImage.getCenterPoint().x;
     let originOfMainY = this.mainImage.getCenterPoint().y;
+    //This moves the crop according to the center of the main image
     let cropMainTop = this.clipPath.top - originOfMainY;
     let cropMainLeft = this.clipPath.left - originOfMainX; 
+    //If the user rescales, then the cropping will following the rescaling
+    let cropWidth = this.clipPath.width*this.clipPath.scaleX; 
+    let cropHeight = this.clipPath.height*this.clipPath.scaleY;
     console.log("This is the origin of the main image: " + this.mainImage.getCenterPoint());
 
     //This is clipping where the origin is the center of the main image!
     let actualClipping = new fabric.Rect({
-      width:300,
-      height:300,
+      width:cropWidth,
+      height:cropHeight,
       originX: "left",
       originY: "top",
       top: cropMainTop,
-      left: cropMainLeft
+      left: cropMainLeft,
+      angle: this.clipPath.angle
     });
     console.log("actualClipping: " + JSON.stringify(actualClipping));
     mainImage.clipPath = actualClipping;

@@ -6,6 +6,16 @@
     --hover-font-color:#2ecc71; 
 }
 
+
+
+/*
+====================================================================================================================================
+
+The wrappers styling
+
+====================================================================================================================================
+*/
+
 #logo {
     display:inline-block;
     position:absolute;
@@ -15,31 +25,49 @@
 
 }
 
-#logo span {
-    color: linear-gradient(193deg, #06a77d, #3e85e8);
-    -webkit-animation: TextColor 6s ease-in-out infinite;
-    -moz-animation: TextColor 6s ease-in-out infinite;
-    animation: TextColor 6s ease-in-out infinite;
-}
-@-webkit-keyframes TextColor {
-    0%{color:#06a77d}
-    25%{color: #3e85e8}
-    50%{color: #7c4eb0}
-    100%{color:#06a77d}
-}
-@-moz-keyframes TextColor {
-    0%{color:#06a77d}
-    25%{color: #3e85e8}
-    50%{color: #7c4eb0}
-    100%{color:#06a77d}
-}
-@keyframes TextColor { 
-    0%{color:#06a77d}
-    25%{color: #3e85e8}
-    50%{color: #7c4eb0}
-    100%{color:#06a77d}
+    #logo span {
+        color: linear-gradient(193deg, #06a77d, #3e85e8);
+        -webkit-animation: TextColor 6s ease-in-out infinite;
+        -moz-animation: TextColor 6s ease-in-out infinite;
+        animation: TextColor 6s ease-in-out infinite;
+    }
+        @-webkit-keyframes TextColor {
+            0%{color:#06a77d}
+            25%{color: #3e85e8}
+            50%{color: #7c4eb0}
+            100%{color:#06a77d}
+        }
+        @-moz-keyframes TextColor {
+            0%{color:#06a77d}
+            25%{color: #3e85e8}
+            50%{color: #7c4eb0}
+            100%{color:#06a77d}
+        }
+        @keyframes TextColor { 
+            0%{color:#06a77d}
+            25%{color: #3e85e8}
+            50%{color: #7c4eb0}
+            100%{color:#06a77d}
+        }
+
+.center{
+    display:inline-block;
 }
 
+.right {
+    display:inline-block;
+    position:absolute;
+    right: 0;
+    top:0;
+}
+
+/*
+====================================================================================================================================
+
+The specific buttons styling
+
+====================================================================================================================================
+*/
 #logo::after{
     content: "CC Editor";
 }
@@ -73,17 +101,10 @@
 }
 
 #remove-btn::after {
-    content:"Remove";
+    content:"Clear";
 }
 
 
-
-
-
-
-.center{
-    display:inline-block;
-}
 
 button {
     background-color:transparent;
@@ -100,22 +121,16 @@ button::after {
     left:40px;
 }
 
-a {
+a,span {
     color:var(--main-font-color);
 }
-
-a:hover{
-    color:var(--hover-font-color);
-}
-
 
 span {
     font-size: 80px;
-    color:var(--main-font-color);
     position:relative;
 }
 
-span:hover{
+div.button:hover,span:hover, a:hover, button:hover:after {
     color:var(--hover-font-color);
 }
 
