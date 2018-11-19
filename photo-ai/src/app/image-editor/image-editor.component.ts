@@ -21,14 +21,6 @@ export class ImageEditorComponent implements OnInit {
   }
 
 
-
-
-
-
-
-
-
-
   /**
    * This will allow to instantiate the canvas and will apply zoom onto canvas.
    * Left means a certain amount of pixels from the left of the object or the canvas.
@@ -52,14 +44,14 @@ export class ImageEditorComponent implements OnInit {
         opt.e.preventDefault();
         opt.e.stopPropagation();
       });
+   
     }
 
 
-
-
-
-
-
+  uploadFile(event:any): void {
+    const uploadBtn = document.getElementById("upload");
+    uploadBtn.click();
+  }
 
 
 
@@ -91,14 +83,13 @@ export class ImageEditorComponent implements OnInit {
         if(!MainImageExist) {
           ImageEditor.setMainImage(image);
           console.log("Main Image: " + JSON.stringify(image)); 
+          image.on('modified', function() {
+            console.log(JSON.stringify(image));
+          });
         }
         else console.log("Image: " + JSON.stringify(image));
       })};
     }
-
-
-
-
 
 
 
@@ -117,19 +108,38 @@ export class ImageEditorComponent implements OnInit {
 
 
 
-
   /**
    * This will save the image from the canvas
    * @param event 
    */
   saveFile(event:any): void {
-    this.canvas.getElement().toBlob(function(blob){
-      saveAs(blob, "editedIMG.png");
-    });
+    if(this.mainImage.clipPath == null){
+      let dataUrl = this.canvas.toDataURL({
+        format:'png',
+        left:this.mainImage.left,
+        top:this.mainImage.top,
+        width:this.mainImage.width,
+        height:this.mainImage.height
+      });
+      const dlBtn = document.getElementById("save");
+      dlBtn.setAttribute("href",dataUrl);
+    } else {
+      let originOfMainX = this.mainImage.getCenterPoint().x;
+      let originOfMainY = this.mainImage.getCenterPoint().y;
+      let saveTop = this.mainImage.clipPath.top + originOfMainY;
+      let saveLeft = this.mainImage.clipPath.left + originOfMainX; 
+      let dataUrl = this.canvas.toDataURL({
+        format:'png',
+        left:saveLeft,
+        top:saveTop,
+        width:this.mainImage.clipPath.width,
+        height:this.mainImage.clipPath.height
+      });
+      const dlBtn = document.getElementById("save");
+      dlBtn.setAttribute("href",dataUrl);
+    }
+  
   }
-
-
-
 
 
 
@@ -202,8 +212,8 @@ export class ImageEditorComponent implements OnInit {
    */
   remove(event) {
     let active = this.canvas.getActiveObject();
+    console.log(JSON.stringify(active));
     this.canvas.remove(active);
-    this.canvas._objects.pop();
     this.canvas.renderAll();
   }
   
