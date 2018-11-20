@@ -255,7 +255,7 @@ export class ImageEditorComponent implements OnInit {
   }
 
   /**
-   * This removes the image
+   * This removes the image and will clear all information from the canvas
    * @param event 
    */
   remove(event) {
@@ -265,6 +265,8 @@ export class ImageEditorComponent implements OnInit {
     for (let i= 0; i< length; i++) {
       this.canvas.remove(canvasObjects[i]);
     } 
+    this.undoStack=[];
+    this.redoStack=[];
     this.mainImage = false;
     this.mainImageExists = false;
     this.canvas.renderAll();
