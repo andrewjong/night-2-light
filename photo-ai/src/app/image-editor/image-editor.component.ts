@@ -89,6 +89,7 @@ export class ImageEditorComponent implements OnInit {
         }
         else console.log("Image: " + JSON.stringify(image));
       })};
+      event.target.value="";
     }
 
 
@@ -228,8 +229,11 @@ export class ImageEditorComponent implements OnInit {
   remove(event) {
     let active = this.canvas.getActiveObject();
     console.log(JSON.stringify(active));
+
     this.canvas.remove(active);
     this.canvas.remove(active);
+    this.mainImage = false;
+    this.mainImageExists = false;
     this.canvas.renderAll();
   }
   
