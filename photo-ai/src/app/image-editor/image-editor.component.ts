@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import 'fabric';
-import {saveAs} from 'file-saver';
+// import {saveAs} from 'file-saver';
+// import { Canvas } from 'fabric/fabric-impl';
+// import { ThrowStmt } from '@angular/compiler';
 declare const fabric: any;
 
 
@@ -15,6 +17,8 @@ export class ImageEditorComponent implements OnInit {
   canvas: any;
   mainImage:any;
   mainImageExists:boolean;
+  undoStack: Object[] = [];
+  redoStack: Object[] =[];
 
   constructor() { 
    
@@ -44,7 +48,6 @@ export class ImageEditorComponent implements OnInit {
         opt.e.preventDefault();
         opt.e.stopPropagation();
       });
-   
     }
 
 
@@ -74,18 +77,19 @@ export class ImageEditorComponent implements OnInit {
         let image = img.set({
             originX: "left",
             originY: "top",
+            selectable: false
           });
         canvasHere.add(image);
         canvasHere.centerObject(image);
-        canvasHere.setActiveObject(image);
+        // canvasHere.setActiveObject(image);
         image.setCoords();
         canvasHere.renderAll();
         if(!MainImageExist) {
           ImageEditor.setMainImage(image);
-          console.log("Main Image: " + JSON.stringify(image)); 
-          image.on('modified', function() {
-            console.log(JSON.stringify(image));
-          });
+          // console.log("Main Image: " + JSON.stringify(image)); 
+          // image.on('modified', function() {
+            // console.log(JSON.stringify(image));
+          // });
         }
         else console.log("Image: " + JSON.stringify(image));
       })};
@@ -103,6 +107,40 @@ export class ImageEditorComponent implements OnInit {
     this.mainImage = image; 
     return true;
   }
+
+
+
+
+  pushIntoStack(stack:object[]) : void{
+    let data = this.canvas.toJSON();
+    stack.push(data);
+  }
+
+
+
+  undo(event:any): void {
+    let canvasHere = this.canvas;
+    if(this.undoStack.length > 0){
+      this.pushIntoStack(this.redoStack);
+      let oldState = this.undoStack.pop();
+      this.canvas.loadFromJSON(oldState, canvasHere.renderAll.bind(canvasHere));
+    }
+  }
+
+
+
+
+
+  redo(event:any): void {
+    console.log(this.redoStack);
+    let canvasHere = this.canvas;
+    if(this.redoStack.length > 0){
+      this.pushIntoStack(this.undoStack);
+      let oldState = this.redoStack.pop();
+      this.canvas.loadFromJSON(oldState,canvasHere.renderAll.bind(canvasHere));
+    }
+  }
+
 
 
 
@@ -155,6 +193,7 @@ export class ImageEditorComponent implements OnInit {
    * @param event 
    */
   showCropArea(event) {
+    this.pushIntoStack(this.undoStack); //this will push into the undo stack
     this.isCropping = true;
     let clippath = new fabric.Rect({
       width:300,
@@ -172,11 +211,6 @@ export class ImageEditorComponent implements OnInit {
     canvasHere.renderAll();
     let newElement = this.canvas.getObjects().length -1;
     this.clipPath = clippath;
-
-   this.clipPath.on('modified', function() {
-        console.log(JSON.stringify(this));
-      });
-   
     }
   
   
@@ -202,7 +236,6 @@ export class ImageEditorComponent implements OnInit {
     //If the user rescales, then the cropping will following the rescaling
     let cropWidth = this.clipPath.width*this.clipPath.scaleX; 
     let cropHeight = this.clipPath.height*this.clipPath.scaleY;
-    console.log("This is the origin of the main image: " + this.mainImage.getCenterPoint());
 
     //This is clipping where the origin is the center of the main image!
     let actualClipping = new fabric.Rect({
@@ -214,7 +247,6 @@ export class ImageEditorComponent implements OnInit {
       left: cropMainLeft,
       angle: this.clipPath.angle
     });
-    console.log("actualClipping: " + JSON.stringify(actualClipping));
     mainImage.clipPath = actualClipping;
     this.canvas.remove(this.clipPath);
     this.canvas.remove(actualClipping);
@@ -228,10 +260,11 @@ export class ImageEditorComponent implements OnInit {
    */
   remove(event) {
     let active = this.canvas.getActiveObject();
-    console.log(JSON.stringify(active));
-
-    this.canvas.remove(active);
-    this.canvas.remove(active);
+    let canvasObjects = this.canvas.getObjects();
+    let length=canvasObjects.length;
+    for (let i= 0; i< length; i++) {
+      this.canvas.remove(canvasObjects[i]);
+    } 
     this.mainImage = false;
     this.mainImageExists = false;
     this.canvas.renderAll();
