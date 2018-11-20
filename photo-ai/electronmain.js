@@ -7,12 +7,13 @@ const notify = require('electron-main-notification');
 
 let win;
 function createWindow () {
-  const windowOptions = {width: 1400, height: 900, show:false};
+  const windowOptions = {width: 1400, height: 900, show: false};
   win = new BrowserWindow(windowOptions); // load the dist folder from Angular
 
 
-
-  win.on('closed', () => { win = null });
+  win.on('closed', () => {
+    win = null
+  });
 
   win = Splashscreen.initSplashScreen({
     windowOpts: windowOptions,
@@ -25,26 +26,42 @@ function createWindow () {
       transparent: true,
     },
   });
-  const fileurl = url.format({ pathname: path.join(__dirname, 'dist/photo-ai/index.html'), protocol: 'file:', slashes: true });
+  const fileurl = url.format({
+    pathname: path.join(__dirname, 'dist/photo-ai/index.html'),
+    protocol: 'file:',
+    slashes: true
+  });
   console.log(fileurl);
   win.loadURL(fileurl);
   win.setMenu(null);
 // Open the DevTools optionally:
   win.webContents.openDevTools();
 
-  var python = require('child_process').spawn('python', ['hello.py']);
-  python.stdout.on('data',function(data){
-    console.log("data: ",data.toString('utf8'));
-  });
-}
+  // var python = require('child_process').spawn('python', ['hello.py']);
+  // python.stdout.on('data',function(data){
+  //   console.log("data: ",data.toString('utf8'));
+  //
+  //   console.log("PythonScript Completed")
+  // });
+  //
+  let {PythonShell} = require('python-shell')
 
+  var some_arg = '';
+  PythonShell.run('hello.py', {args: [some_arg]}, function (err, results) {
+    if (err) throw err;
+    // results is an array consisting of messages collected during execution
+    console.log('results: %j', results);
+  })
+
+}
 
 app.setAppUserModelId('Photo-Ai');
 app.on('ready', createWindow);
 app.on('window-all-closed', () => { if (process.platform !== 'darwin') { app.quit() } });
-app.on('activate', () => { if (win === null) { createWindow() } });
+app.on('activate', () => { if (win === null) { createWindow() } })
 app.on('ready', () => {
   notify('Welcome!', { body: 'This is Hangman in Electron!' }, () => {
     console.log('The notification got clicked on!')
   })
-});
+})
+
