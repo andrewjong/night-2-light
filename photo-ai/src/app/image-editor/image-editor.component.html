@@ -11,9 +11,17 @@
     </button>
     <input id="upload" type="file" accept="image/*" hidden="hidden" (change)="previewFile($event)"/>
 
+    <button id="camera-btn" value="Camera" >
+        <span class="material-icons">camera</span>
+      </button>
+
     <button id="convert-btn" value="Convert" >
         <span class="material-icons">wb_sunny</span>
       </button>
+
+      <button id="tune-btn" value="Tune" >
+          <span class="material-icons">tune</span>
+        </button>
 
     <button id="crop-btn" value="Crop" (click)="showCropArea($event)">
       <span class="material-icons">crop</span>

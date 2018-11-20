@@ -76,12 +76,16 @@ The specific buttons styling
     content:"Upload";
 }
 
+#camera-btn::after {
+    content:"Photo";
+}
+
 #convert-btn::after {
     content:"Convert";
 }
 
-#save-btn::after {
-    content:"Save";
+#tune-btn::after {
+    content:"Tune";
 }
 
 #crop-btn::after {
@@ -104,6 +108,9 @@ The specific buttons styling
     content:"Clear";
 }
 
+#save-btn::after {
+    content:"Save";
+}
 
 
 button {
@@ -118,7 +125,7 @@ button::after {
     color:var(--main-font-color);
     margin: 0 auto;
     bottom:0px;
-    left:40px;
+    left:35%;
 }
 
 a,span {
