@@ -16,10 +16,7 @@ export class ImageEditorComponent implements OnInit {
   mainImage:any;
   mainImageExists:boolean;
 
-  constructor() { 
-   
-  }
-
+  constructor(){}
 
   /**
    * This will allow to instantiate the canvas and will apply zoom onto canvas.
