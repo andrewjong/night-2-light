@@ -2,12 +2,13 @@ import {NgModule} from "@angular/core";
 import {PreloadAllModules, RouterModule, Routes} from "@angular/router";
 import { HomeComponent } from './home/home.component';
 import { ImageEditorComponent } from "./image-editor/image-editor.component";
+import {AppComponent} from "./app.component";
 
 
 
 
 const appRoutes: Routes = [
-  {path: '' , component: HomeComponent},
+  {path: '' , component: AppComponent},
   {path: 'ImageEditor' , component: ImageEditorComponent}
     // canActivate: [AuthGuard]},
 ];

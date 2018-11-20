@@ -140,12 +140,7 @@ export class ImageEditorComponent implements OnInit {
       const dlBtn = document.getElementById("save");
       dlBtn.setAttribute("href",dataUrl);
     }
-  
   }
-
-
-
-
 
   /**
    * This will show the applyable crop area

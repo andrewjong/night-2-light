@@ -31,6 +31,11 @@ function createWindow () {
   win.setMenu(null);
 // Open the DevTools optionally:
   win.webContents.openDevTools();
+
+  var python = require('child_process').spawn('python', ['hello.py']);
+  python.stdout.on('data',function(data){
+    console.log("data: ",data.toString('utf8'));
+  });
 }
 
 
