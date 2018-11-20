@@ -119,7 +119,8 @@ export class ImageEditorComponent implements OnInit {
         left:this.mainImage.left,
         top:this.mainImage.top,
         width:this.mainImage.width,
-        height:this.mainImage.height
+        height:this.mainImage.height,
+        angle:this.mainImage.angle
       });
       const dlBtn = document.getElementById("save");
       dlBtn.setAttribute("href",dataUrl);
@@ -128,12 +129,15 @@ export class ImageEditorComponent implements OnInit {
       let originOfMainY = this.mainImage.getCenterPoint().y;
       let saveTop = this.mainImage.clipPath.top + originOfMainY;
       let saveLeft = this.mainImage.clipPath.left + originOfMainX; 
+      //If the user rescales, then the cropping will following the rescaling
+    let saveWidth = this.clipPath.width*this.clipPath.scaleX; 
+    let saveHeight = this.clipPath.height*this.clipPath.scaleY;
       let dataUrl = this.canvas.toDataURL({
         format:'png',
         left:saveLeft,
         top:saveTop,
-        width:this.mainImage.clipPath.width,
-        height:this.mainImage.clipPath.height
+        width:saveWidth,
+        height:saveHeight,
       });
       const dlBtn = document.getElementById("save");
       dlBtn.setAttribute("href",dataUrl);
@@ -157,6 +161,7 @@ export class ImageEditorComponent implements OnInit {
       opacity: 0,
       originX: "left",
       originY: "top",
+      lockRotation: true
     });
     let canvasHere = this.canvas;
     canvasHere.add(clippath);
@@ -223,6 +228,7 @@ export class ImageEditorComponent implements OnInit {
   remove(event) {
     let active = this.canvas.getActiveObject();
     console.log(JSON.stringify(active));
+    this.canvas.remove(active);
     this.canvas.remove(active);
     this.canvas.renderAll();
   }
