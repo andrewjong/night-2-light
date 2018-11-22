@@ -31,7 +31,8 @@
               "node_modules/primeng/resources/primeng.min.css"
             ],
             "scripts": [
-              "node_modules/fabric/dist/fabric.js"
+              "node_modules/fabric/dist/fabric.js",
+              "src/assets/js/pyRunner.js"
             ]
           },
           "configurations": {

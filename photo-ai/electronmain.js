@@ -3,7 +3,7 @@ const {app, BrowserWindow} = require('electron');
 const path = require('path');
 const url = require('url');
 const notify = require('electron-main-notification');
-
+let {PythonShell} = require('python-shell')
 
 let win;
 function createWindow () {
@@ -44,7 +44,7 @@ function createWindow () {
   //   console.log("PythonScript Completed")
   // });
   //
-  let {PythonShell} = require('python-shell')
+
 
   var some_arg = '';
   PythonShell.run('hello.py', {args: [some_arg]}, function (err, results) {
@@ -53,6 +53,15 @@ function createWindow () {
     console.log('results: %j', results);
   })
 
+}
+
+function pyrun() {
+  var some_arg = '';
+  PythonShell.run('hello.py', {args: [some_arg]}, function (err, results) {
+    if (err) throw err;
+    // results is an array consisting of messages collected during execution
+    console.log('results: %j', results);
+  })
 }
 
 app.setAppUserModelId('Photo-Ai');

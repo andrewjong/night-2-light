@@ -1,7 +1,11 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Observable, Subject} from "rxjs";
 import {WebcamImage} from "ngx-webcam";
+import {ElectronService} from "ngx-electron";
 
+// let {PythonShell} = require('python-shell')
+
+declare function pyRun(): any;
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -13,7 +17,7 @@ export class HomeComponent implements OnInit {
   private trigger: Subject<void> = new Subject<void>();
   @ViewChild('fileInput') fileInput: ElementRef;
 
-  constructor() { }
+  constructor(private _electronService: ElectronService) {}
   ngOnInit() {}
 
   onSelectFile(event) { // called each time file input changes
@@ -44,4 +48,16 @@ export class HomeComponent implements OnInit {
   public handleImage(webcamImage: WebcamImage): void {
     this.url = webcamImage.imageAsDataUrl
   }
+  public pyrunner(): void {
+    pyRun();
+  }
+
+  // pythonScript() {
+  //   var some_arg = '';
+  //   PythonShell.run('../hello.py', {args: [some_arg]}, function (err, results) {
+  //     if (err) throw err;
+  //     // results is an array consisting of messages collected during execution
+  //     console.log('results: %j', results);
+  //   })
+  // }
 }

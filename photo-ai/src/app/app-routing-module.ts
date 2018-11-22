@@ -8,7 +8,7 @@ import {AppComponent} from "./app.component";
 
 
 const appRoutes: Routes = [
-  {path: '' , component: AppComponent},
+  {path: '' , component: HomeComponent},
   {path: 'ImageEditor' , component: ImageEditorComponent}
     // canActivate: [AuthGuard]},
 ];
