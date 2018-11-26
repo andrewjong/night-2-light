@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import 'fabric';
-// import {saveAs} from 'file-saver';
-// import { Canvas } from 'fabric/fabric-impl';
-// import { ThrowStmt } from '@angular/compiler';
 declare const fabric: any;
 
 
@@ -12,7 +9,7 @@ declare const fabric: any;
   styleUrls: ['./image-editor.component.css']
 })
 export class ImageEditorComponent implements OnInit {
-  isCropping: boolean = false;
+  canCrop: boolean = false;
   clipPath: any;
   canvas: any;
   mainImage:any;
@@ -51,6 +48,12 @@ export class ImageEditorComponent implements OnInit {
     }
 
 
+
+  /**
+   * This will allow the person to upload the file after clicking the button to trigger 
+   * the preview file 
+   * @param event 
+   */
   uploadFile(event:any): void {
     const uploadBtn = document.getElementById("upload");
     uploadBtn.click();
@@ -79,19 +82,18 @@ export class ImageEditorComponent implements OnInit {
             originY: "top",
             selectable: false
           });
-        canvasHere.add(image);
-        canvasHere.centerObject(image);
-        // canvasHere.setActiveObject(image);
-        image.setCoords();
-        canvasHere.renderAll();
-        if(!MainImageExist) {
-          ImageEditor.setMainImage(image);
-          // console.log("Main Image: " + JSON.stringify(image)); 
-          // image.on('modified', function() {
-            // console.log(JSON.stringify(image));
-          // });
-        }
-        else console.log("Image: " + JSON.stringify(image));
+          if(MainImageExist == null) {
+            ImageEditor.setMainImage(image);
+          }
+          else {
+            const clearBtn = document.getElementById("clear-btn");
+            clearBtn.click();
+            ImageEditor.setMainImage(image);
+          }
+          canvasHere.add(image);
+          canvasHere.centerObject(image);
+          image.setCoords();
+          canvasHere.renderAll();
       })};
       event.target.value="";
     }
@@ -110,7 +112,10 @@ export class ImageEditorComponent implements OnInit {
 
 
 
-
+  /**
+   * This will push into either the undo or redo stack.
+   * @param stack 
+   */
   pushIntoStack(stack:object[]) : void{
     let data = this.canvas.toJSON();
     stack.push(data);
@@ -118,6 +123,10 @@ export class ImageEditorComponent implements OnInit {
 
 
 
+  /**
+   * This will allow the user to undo changes up until 3 times.
+   * @param event 
+   */
   undo(event:any): void {
     let canvasHere = this.canvas;
     if(this.undoStack.length > 0){
@@ -130,7 +139,10 @@ export class ImageEditorComponent implements OnInit {
 
 
 
-
+  /**
+   * This will allow the user to redo changes up until 3 times.
+   * @param event 
+   */
   redo(event:any): void {
     console.log(this.redoStack);
     let canvasHere = this.canvas;
@@ -192,16 +204,30 @@ export class ImageEditorComponent implements OnInit {
    * This will show the applyable crop area
    * @param event 
    */
-  showCropArea(event) {
+  showCropArea(event) : void {
+    this.canCrop = true;
     this.pushIntoStack(this.undoStack); //this will push into the undo stack
-    this.isCropping = true;
     let clippath = new fabric.Rect({
-      width:300,
-      height:300,
+      width:this.mainImage.width,
+      height:this.mainImage.height,
       opacity: 0,
       originX: "left",
       originY: "top",
       lockRotation: true
+    });
+    let topBorder = this.mainImage.aCoords.tl.y;
+    let leftBorder = this.mainImage.aCoords.tl.x;
+    let rightBorder = this.mainImage.aCoords.tr.x;
+    let bottomBorder = this.mainImage.aCoords.br.y;
+    clippath.on('moved', function(){
+      if(this.aCoords.tl.y < topBorder)
+        this.top = topBorder;
+      if(this.aCoords.bl.y > bottomBorder)
+        this.top = bottomBorder-(this.height*this.scaleY);
+      if(this.aCoords.tr.x > rightBorder)
+        this.left = rightBorder-(this.width*this.scaleX);
+      if(this.aCoords.tl.x < leftBorder)
+        this.left = leftBorder;
     });
     let canvasHere = this.canvas;
     canvasHere.add(clippath);
@@ -224,16 +250,19 @@ export class ImageEditorComponent implements OnInit {
 
   /**
    * This will apply the crop form the cropArea
+   * This origin for the cropping is base don the center of the main image.
+   * Rendering is not enough to reveal the image. You must set the image cache to be true
+   * so it can be rerendered.
    * @param event 
    */
-  crop(event) {
+  crop(event) : void {
     let mainImage =this.canvas.getObjects()[0];
     let originOfMainX = this.mainImage.getCenterPoint().x;
     let originOfMainY = this.mainImage.getCenterPoint().y;
     //This moves the crop according to the center of the main image
     let cropMainTop = this.clipPath.top - originOfMainY;
     let cropMainLeft = this.clipPath.left - originOfMainX; 
-    //If the user rescales, then the cropping will following the rescaling
+    //If the user rescales, then the cropping will follow the rescaling
     let cropWidth = this.clipPath.width*this.clipPath.scaleX; 
     let cropHeight = this.clipPath.height*this.clipPath.scaleY;
 
@@ -247,18 +276,23 @@ export class ImageEditorComponent implements OnInit {
       left: cropMainLeft,
       angle: this.clipPath.angle
     });
+    if(mainImage.clipPath != null)
+      mainImage.clipPath="";
     mainImage.clipPath = actualClipping;
     this.canvas.remove(this.clipPath);
     this.canvas.remove(actualClipping);
-    this.canvas.add(mainImage);
+    this.mainImage.dirty = true;
     this.canvas.renderAll();
+    this.canCrop = false;
   }
 
   /**
    * This removes the image and will clear all information from the canvas
    * @param event 
    */
-  remove(event) {
+  clear(event:any) :void {
+    if(this.canCrop)
+      this.canCrop = false;
     let active = this.canvas.getActiveObject();
     let canvasObjects = this.canvas.getObjects();
     let length=canvasObjects.length;

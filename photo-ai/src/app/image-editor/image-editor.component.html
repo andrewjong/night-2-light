@@ -23,11 +23,11 @@
           <span class="material-icons">tune</span>
         </button>
 
-    <button id="crop-btn" value="Crop" (click)="showCropArea($event)">
+    <button id="crop-btn" value="Crop" (click)="showCropArea($event)" *ngIf="!canCrop">
       <span class="material-icons">crop</span>
     </button>
 
-    <button id="apply-btn" value="Apply Crop" (click)="crop($event)">
+    <button id="apply-btn" value="Apply Crop" (click)="crop($event)" *ngIf="canCrop">
       <span class="material-icons">check</span>
     </button>
     
@@ -39,7 +39,7 @@
       <span class="material-icons">redo</span>
     </button>
     
-    <button id="remove-btn" value="Remove" (click)="remove($event)">
+    <button id="clear-btn" value="Remove" (click)="clear($event)">
       <span class="material-icons">clear</span>
     </button>
   </div>
