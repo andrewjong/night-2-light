@@ -1,31 +1,35 @@
-import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
 
-import {AppComponent} from './app.component';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { AppComponent } from './app.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {RouterModule} from "@angular/router";
 import {AppRoutingModule} from "./app-routing-module";
-import {HomeComponent} from './home/home.component';
-import {FormsModule} from "@angular/forms";
-import {TableModule} from "primeng/table";
-import {HttpClientModule} from "@angular/common/http";
-import {ButtonModule, DialogModule, InputTextModule} from "primeng/primeng";
+import { HomeComponent } from './home/home.component';
+import {FileUploadModule} from 'primeng/fileupload';
+import {ButtonModule} from 'primeng/button';
+import {ToolbarModule} from 'primeng/toolbar';
+import {SplitButtonModule} from 'primeng/splitbutton';
+import {WebcamModule} from 'ngx-webcam';
+import { ImageEditorComponent } from './image-editor/image-editor.component';
+import { NgxElectronModule } from 'ngx-electron';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
+    ImageEditorComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    FormsModule,
-    TableModule,
-    HttpClientModule,
-    InputTextModule,
-    DialogModule,
+    AppRoutingModule,
+    FileUploadModule,
     ButtonModule,
-    AppRoutingModule
+    ToolbarModule,
+    SplitButtonModule,
+    WebcamModule,
+    NgxElectronModule
   ],
   exports: [RouterModule],
   providers: [],

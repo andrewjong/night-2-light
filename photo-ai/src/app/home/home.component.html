@@ -1,64 +1,52 @@
-  <p>
-    home works!
-  </p>
-  <!--This is string interpolation, an easy way of displaying text from a variable. It should automatically detect changes to the variable-->
-  <p>
-    {{stringinterpolation}}
-  </p>
+<div id="container">
+  <div id="main">
+    <button pButton type="button" label="Execute Python" icon="pi pi-video" (click)="pyrunner()"></button>
 
-  <!--Ng for example-->
-  <li *ngFor="let hero of heroes">
-    {{ hero }}
-  </li>
-  <br>
-  <!--click example, toggles the toggletable() method-->
-  <button pButton type="button" label="Click" (click)="toggletable()"></button>
+    <!--<h1>Photo Editor</h1>-->
+        <!--<div id="swipe-area" class="p-grid ui-g">-->
 
-<!--Ng if example. Displays the div in the dom if the statement is true-->
-<div *ngIf="tabletoggled">
-  <br>
-  <p-dialog header="Car Details" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true" [closable]="true" [width]="300">
-    <div class="ui-g ui-fluid" *ngIf="car">
-      <div class="ui-g-4"><label for="vin">Vin</label></div>
-      <div class="ui-g-8"><input pInputText id="vin" [(ngModel)]="car.vin" /></div>
+          <!--<div class="edit-container p-md-6 p-col-12">-->
+            <!--<p-toolbar class="p-lg-6">-->
+              <!--<div class="ui-toolbar-group-left">-->
+                <!--<button pButton type="button" label="Use Webcam" icon="pi pi-video" (click)="toggleWebcam()" *ngIf="!showWebcam"></button>-->
+                <!--<button pButton type="button" label="Use Webcam" icon="pi pi-video" (click)="toggleWebcam()" *ngIf="!showWebcam"></button>-->
+                <!--<button pButton type="button" label="Stop Webcam" icon="pi pi-times"  class="ui-button-danger" (click)="toggleWebcam()" *ngIf="showWebcam"></button>-->
+                <!--<button pButton type="button" label="Take pic" class="pi" (click)="triggerSnapshot()" *ngIf="showWebcam"></button>-->
+                <!--<button pButton type="button" label="Upload" icon="pi pi-upload" (click)="fileInput.click()" *ngIf="!showWebcam"></button>-->
+              <!--</div>-->
+            <!--</p-toolbar>-->
 
-      <div class="ui-g-4"><label for="year">Year</label></div>
-      <div class="ui-g-8"><input pInputText id="year" [(ngModel)]="car.year" /></div>
+            <!--<div class= "photo-container p-col-12">-->
+              <!--<img class="p-col-12" [src]="url" *ngIf="url !=='' && !showWebcam">-->
+              <!--<webcam [height]="600" [width]="600" [trigger]="triggerObservable" (imageCapture)="handleImage($event)"-->
+                    <!--class="p-col-12" *ngIf="showWebcam"></webcam>-->
+            <!--</div>-->
 
-      <div class="ui-g-4"><label for="brand">Brand</label></div>
-      <div class="ui-g-8"><input pInputText id="brand" [(ngModel)]="car.brand" /></div>
+          <!--</div>-->
 
-      <div class="ui-g-4"><label for="color">Color</label></div>
-      <div class="ui-g-8"><input pInputText id="color" [(ngModel)]="car.color" /></div>
+          <!--<div class="edit-container p-lg-6 p-md-6 p-col-12">-->
+              <!--<p-toolbar class="p-col-6">-->
+                  <!--<div class="ui-toolbar-group-left">-->
+                    <!--<button pButton type="button" label="Convert" icon="pi pi-caret-up"></button>-->
+                    <!--<button pButton type="button" label="Crop"></button>-->
+                    <!--&lt;!&ndash;<p-splitButton type="button" label="Edit" icon="pi pi-pencil" [model]="items"></p-splitButton >&ndash;&gt;-->
+                  <!--</div>-->
+              <!--</p-toolbar>-->
+
+              <!--<div class= "photo-container p-col-12">-->
+                  <!--<img class="p-col-12" [src]="url" *ngIf="url !== ''">-->
+              <!--</div>-->
+          <!--</div>-->
+
+          <!--<a id="download-btn" [href]="url" download="procImg" target="_self" pButton type="button" class="ui-button-warning"  icon="pi pi-download" *ngIf="url !==''" label="Download" ></a>-->
+          <!--<input-->
+            <!--style="display: none"-->
+            <!--type="file" name="pic" accept="image/*" (change)="onSelectFile($event)"-->
+            <!--#fileInput>-->
+        <!--</div>-->
+
     </div>
-    <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button type="button" pButton icon="pi pi-times" (click)="delete()" label="Delete"></button>
-        <button type="button" pButton icon="pi pi-check" (click)="save()" label="Save"></button>
-      </div>
-    </p-footer>
-  </p-dialog>
 
-  <p-table [columns]="cols" [value]="cars" selectionMode="single" [(selection)]="selectedCar" (onRowSelect)="onRowSelect($event)" [paginator]="true" rows="10">
-    <ng-template pTemplate="header" let-columns>
-      <tr>
-        <th *ngFor="let col of columns">
-          {{col.header}}
-        </th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-rowData let-columns="columns">
-      <tr [pSelectableRow]="rowData">
-        <td *ngFor="let col of columns">
-          {{rowData[col.field]}}
-        </td>
-      </tr>
-    </ng-template>
-
-    <ng-template pTemplate="summary" let-rowData>
-      <div style="text-align:left">
-        <button type="button" pButton icon="pi pi-plus" (click)="showDialogToAdd()" label="Add"></button>
-      </div>
-    </ng-template>
-  </p-table>
+    <footer id="footer" class="p-col-12">&copy; 2018 JAVV</footer>
 </div>
+

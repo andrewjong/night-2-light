@@ -1,89 +1,63 @@
-import {Component, OnInit} from '@angular/core';
-import {CarService} from "../services/carservice";
-import {Car} from "../domain/car";
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Observable, Subject} from "rxjs";
+import {WebcamImage} from "ngx-webcam";
+import {ElectronService} from "ngx-electron";
 
-export class PrimeCar implements Car {
-  constructor(public vin?, public year?, public brand?, public color?) {}
-}
+// let {PythonShell} = require('python-shell')
 
+declare function pyRun(): any;
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
-  providers:[CarService]
+  styleUrls: ['./home.component.css']
 })
-
 export class HomeComponent implements OnInit {
+  url: string = '';
+  showWebcam: boolean = false;
+  private trigger: Subject<void> = new Subject<void>();
+  @ViewChild('fileInput') fileInput: ElementRef;
 
+  constructor(private _electronService: ElectronService) {}
+  ngOnInit() {}
 
-  stringinterpolation = "hi this is string interpolation"
-
-
-  displayDialog: boolean;
-
-  car: Car = new PrimeCar();
-
-  selectedCar: Car;
-
-  newCar: boolean;
-
-  cars: Car[];
-
-  cols: any[];
-  tabletoggled = false;
-  heroes = ['Windstorm', 'Bombasto', 'Magneta', 'Tornado'];
-
-  constructor(private carService: CarService) { }
-
-  ngOnInit() {
-    this.carService.getCarsSmall().then(cars => this.cars = cars);
-
-    this.cols = [
-      { field: 'vin', header: 'Vin' },
-      { field: 'year', header: 'Year' },
-      { field: 'brand', header: 'Brand' },
-      { field: 'color', header: 'Color' }
-    ];
-  }
-
-  showDialogToAdd() {
-    this.newCar = true;
-    this.car = new PrimeCar();
-    this.displayDialog = true;
-  }
-
-  save() {
-    const cars = [...this.cars];
-    if (this.newCar) {
-      cars.push(this.car);
-    } else {
-      cars[this.findSelectedCarIndex()] = this.car;
+  onSelectFile(event) { // called each time file input changes
+    if (event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0]); // read file as data url
+      reader.onload = (event : Event) => { // called once readAsDataURL is completed
+        if (typeof reader.result === "string") {
+          this.url = reader.result
+        }
+      }
+      this.fileInput.nativeElement.value = ''
     }
-    this.cars = cars;
-    this.car = null;
-    this.displayDialog = false;
   }
 
-  delete() {
-    const index = this.findSelectedCarIndex();
-    this.cars = this.cars.filter((val, i) => i !== index);
-    this.car = null;
-    this.displayDialog = false;
+  toggleWebcam() {
+    this.showWebcam = !this.showWebcam
   }
 
-  onRowSelect(event) {
-    this.newCar = false;
-    this.car = {...event.data};
-    this.displayDialog = true;
+  public get triggerObservable(): Observable<void> {
+    return this.trigger.asObservable();
   }
 
-  findSelectedCarIndex(): number {
-    return this.cars.indexOf(this.selectedCar);
+  public triggerSnapshot(): void {
+    this.trigger.next();
+    this.showWebcam = !this.showWebcam;
+  }
+  public handleImage(webcamImage: WebcamImage): void {
+    this.url = webcamImage.imageAsDataUrl
+  }
+  public pyrunner(): void {
+    pyRun();
   }
 
-  toggletable() {
-    this.tabletoggled = !this.tabletoggled
-    if(this.tabletoggled) this.stringinterpolation = 'You toggled the table'
-    else this.stringinterpolation = 'his this is string interpolation'
-  }
+  // pythonScript() {
+  //   var some_arg = '';
+  //   PythonShell.run('../hello.py', {args: [some_arg]}, function (err, results) {
+  //     if (err) throw err;
+  //     // results is an array consisting of messages collected during execution
+  //     console.log('results: %j', results);
+  //   })
+  // }
 }
