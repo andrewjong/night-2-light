@@ -104,7 +104,7 @@ The specific buttons styling
     content:"Redo";
 }
 
-#remove-btn::after {
+#clear-btn::after {
     content:"Clear";
 }
 
@@ -137,7 +137,7 @@ span {
     position:relative;
 }
 
-div.button:hover,span:hover, a:hover, button:hover:after {
+div button:hover,span:hover, a:hover, button:hover:after {
     color:var(--hover-font-color);
 }
 
