@@ -16,6 +16,7 @@ export class ImageEditorComponent implements OnInit {
   canvas: any;
   mainImage:any;
   mainImageExists:boolean;
+  canSave:boolean;
   undoStack: Object[] = [];
   redoStack: Object[] =[];
 
@@ -36,6 +37,7 @@ export class ImageEditorComponent implements OnInit {
       selectionLineWidth: 5
       });
     let img = this.mainImage;
+    this.canSave = false;
     this.mainImageExists = false;
     let imageExists = this.mainImageExists;
     this.canvas.on('mouse:wheel', function(opt) {
@@ -99,6 +101,7 @@ export class ImageEditorComponent implements OnInit {
           canvasHere.centerObject(image);
           image.setCoords();
           canvasHere.renderAll();
+          ImageEditor.canSave = true;
         })};
     event.target.value="";
   }
@@ -183,38 +186,40 @@ export class ImageEditorComponent implements OnInit {
     let actualTop = this.mainImage.getBoundingRect().top;
     let actualWidth = this.mainImage.getBoundingRect().width;
     let actualHeight = this.mainImage.getBoundingRect().height;
-    //This will save the image if there is no clip path
-    if(this.mainImage.clipPath == null){
-      let dataUrl = this.canvas.toDataURL({
-        format:'png',
-        // left:this.mainImage.left,
-        // top:this.mainImage.top,
-        left:actualLeft,
-        top:actualTop,
-        // width:this.mainImage.width,
-        // height:this.mainImage.height,
-        width: actualWidth,
-        height: actualHeight
-      });
-      const dlBtn = document.getElementById("save");
-      dlBtn.setAttribute("href",dataUrl);
-    } else {
-      let originOfMainX = this.mainImage.getCenterPoint().x;
-      let originOfMainY = this.mainImage.getCenterPoint().y;
-      let saveTop = this.mainImage.clipPath.top + originOfMainY;
-      let saveLeft = this.mainImage.clipPath.left + originOfMainX; 
-      //If the user rescales, then the cropping will following the rescaling
-    let saveWidth = this.clipPath.width*this.clipPath.scaleX; 
-    let saveHeight = this.clipPath.height*this.clipPath.scaleY;
-      let dataUrl = this.canvas.toDataURL({
-        format:'png',
-        left:saveLeft,
-        top:saveTop,
-        width:saveWidth,
-        height:saveHeight,
-      });
-      const dlBtn = document.getElementById("save");
-      dlBtn.setAttribute("href",dataUrl);
+    if(this.canSave){
+      //This will save the image if there is no clip path
+      if(this.mainImage.clipPath == null){
+        let dataUrl = this.canvas.toDataURL({
+          format:'png',
+          // left:this.mainImage.left,
+          // top:this.mainImage.top,
+          left:actualLeft,
+          top:actualTop,
+          // width:this.mainImage.width,
+          // height:this.mainImage.height,
+          width: actualWidth,
+          height: actualHeight
+        });
+        const dlBtn = document.getElementById("save");
+        dlBtn.setAttribute("href",dataUrl);
+      } else {
+        let originOfMainX = this.mainImage.getCenterPoint().x;
+        let originOfMainY = this.mainImage.getCenterPoint().y;
+        let saveTop = this.mainImage.clipPath.top + originOfMainY;
+        let saveLeft = this.mainImage.clipPath.left + originOfMainX; 
+        //If the user rescales, then the cropping will following the rescaling
+      let saveWidth = this.clipPath.width*this.clipPath.scaleX; 
+      let saveHeight = this.clipPath.height*this.clipPath.scaleY;
+        let dataUrl = this.canvas.toDataURL({
+          format:'png',
+          left:saveLeft,
+          top:saveTop,
+          width:saveWidth,
+          height:saveHeight,
+        });
+        const dlBtn = document.getElementById("save");
+        dlBtn.setAttribute("href",dataUrl);
+      }
     }
   
   }
@@ -326,6 +331,7 @@ export class ImageEditorComponent implements OnInit {
     this.mainImage = false;
     this.mainImageExists = false;
     this.canvas.renderAll();
+    this.canSave = false;
   }
   
 }
