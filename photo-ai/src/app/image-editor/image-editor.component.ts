@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import 'fabric';
 import 'jquery';
-import { Canvas } from 'fabric/fabric-impl';
+import { Canvas, Point } from 'fabric/fabric-impl';
 declare const fabric: any;
 
 
@@ -16,6 +16,7 @@ export class ImageEditorComponent implements OnInit {
   canvas: any;
   mainImage:any;
   mainImageExists:boolean;
+  canSave:boolean;
   undoStack: Object[] = [];
   redoStack: Object[] =[];
 
@@ -33,6 +34,7 @@ export class ImageEditorComponent implements OnInit {
       selectionLineWidth: 5
       });
     let img = this.mainImage;
+    this.canSave = false;
     this.mainImageExists = false;
     let imageExists = this.mainImageExists;
     this.canvas.on('mouse:wheel', function(opt) {
@@ -77,7 +79,6 @@ export class ImageEditorComponent implements OnInit {
 
     reader.onload = function (event: Event) {
       let imageElement = reader.result;
-      console.log(imageElement);
       let imgInstance = new fabric.Image.fromURL(imageElement, function(img) {
         let image = img.set({
             originX: "left",
@@ -96,6 +97,7 @@ export class ImageEditorComponent implements OnInit {
           canvasHere.centerObject(image);
           image.setCoords();
           canvasHere.renderAll();
+          ImageEditor.canSave = true;
         })};
     event.target.value="";
   }
@@ -109,16 +111,6 @@ export class ImageEditorComponent implements OnInit {
    */
   setMainImage(image): boolean {
     this.mainImage = image; 
-    this.mainImage.on('mousedblclick', function(){
-      console.log("Bounding Rect properties: "+ JSON.stringify(this.getBoundingRect()));
-      console.log("Left: " + this.left)
-      console.log("Top: " + this.top);
-      console.log("Center as x coordinate: " + this.getCenterPoint().x);
-      console.log("Center as y coordinate: " + this.getCenterPoint().y);
-      console.log("Object's ScaleX: " + this.scaleX + " Object's ScaleY: " + this.scaleY);
-      console.log("After zooming scaling values: " + JSON.stringify(this.getTotalObjectScaling()));
-      console.log("The border scale factor: " + this.borderScaleFactor);
-    });
     return true;
   }
 
@@ -140,11 +132,13 @@ export class ImageEditorComponent implements OnInit {
    * @param event 
    */
   undo(event:any): void {
-    let canvasHere = this.canvas;
+    let ImageEditor = this;
     if(this.undoStack.length > 0){
       this.pushIntoStack(this.redoStack);
       let oldState = this.undoStack.pop();
-      this.canvas.loadFromJSON(oldState, canvasHere.renderAll.bind(canvasHere));
+      this.canvas.loadFromJSON(oldState, this.canvas.renderAll.bind(this.canvas), function(o,object){
+        ImageEditor.setMainImage(object);
+      });
     }
   }
 
@@ -156,12 +150,13 @@ export class ImageEditorComponent implements OnInit {
    * @param event 
    */
   redo(event:any): void {
-    console.log(this.redoStack);
-    let canvasHere = this.canvas;
+    let ImageEditor = this;
     if(this.redoStack.length > 0){
       this.pushIntoStack(this.undoStack);
       let oldState = this.redoStack.pop();
-      this.canvas.loadFromJSON(oldState,canvasHere.renderAll.bind(canvasHere));
+      this.canvas.loadFromJSON(oldState, this.canvas.renderAll.bind(this.canvas), function(o,object){
+        ImageEditor.setMainImage(object);
+      });
     }
   }
 
@@ -176,42 +171,18 @@ export class ImageEditorComponent implements OnInit {
    * @param event 
    */
   saveFile(event:any): void {
-    let actualLeft = this.mainImage.getBoundingRect().left;
-    let actualTop = this.mainImage.getBoundingRect().top;
-    let actualWidth = this.mainImage.getBoundingRect().width;
-    let actualHeight = this.mainImage.getBoundingRect().height;
-    //This will save the image if there is no clip path
-    if(this.mainImage.clipPath == null){
-      let dataUrl = this.canvas.toDataURL({
-        format:'png',
-        // left:this.mainImage.left,
-        // top:this.mainImage.top,
-        left:actualLeft,
-        top:actualTop,
-        // width:this.mainImage.width,
-        // height:this.mainImage.height,
-        width: actualWidth,
-        height: actualHeight
-      });
-      const dlBtn = document.getElementById("save");
-      dlBtn.setAttribute("href",dataUrl);
-    } else {
-      let originOfMainX = this.mainImage.getCenterPoint().x;
-      let originOfMainY = this.mainImage.getCenterPoint().y;
-      let saveTop = this.mainImage.clipPath.top + originOfMainY;
-      let saveLeft = this.mainImage.clipPath.left + originOfMainX; 
-      //If the user rescales, then the cropping will following the rescaling
-    let saveWidth = this.clipPath.width*this.clipPath.scaleX; 
-    let saveHeight = this.clipPath.height*this.clipPath.scaleY;
-      let dataUrl = this.canvas.toDataURL({
-        format:'png',
-        left:saveLeft,
-        top:saveTop,
-        width:saveWidth,
-        height:saveHeight,
-      });
-      const dlBtn = document.getElementById("save");
-      dlBtn.setAttribute("href",dataUrl);
+    this.canvas.setViewportTransform([1,0,0,1,0,0]); 
+    if(this.canSave){
+        let dataUrl = this.canvas.toDataURL({
+          format:'png',
+          left:this.mainImage.left,
+          top:this.mainImage.top,
+          width:this.mainImage.width,
+          height:this.mainImage.height,
+        });
+        const dlBtn = document.getElementById("save");
+        dlBtn.setAttribute("href",dataUrl);
+
     }
   }
 
@@ -270,7 +241,8 @@ export class ImageEditorComponent implements OnInit {
    * @param event 
    */
   crop(event) : void {
-    let mainImage =this.canvas.getObjects()[0];
+    this.canvas.setViewportTransform([1,0,0,1,0,0]);
+    let ImageEditor = this;
     let originOfMainX = this.mainImage.getCenterPoint().x;
     let originOfMainY = this.mainImage.getCenterPoint().y;
     //This moves the crop according to the center of the main image
@@ -280,25 +252,33 @@ export class ImageEditorComponent implements OnInit {
     let cropWidth = this.clipPath.width*this.clipPath.scaleX; 
     let cropHeight = this.clipPath.height*this.clipPath.scaleY;
 
-    //This is clipping where the origin is the center of the main image!
-    let actualClipping = new fabric.Rect({
+    let dataUrl = this.canvas.toDataURL({
+      format:'png',
+      left:this.clipPath.left,
+      top:this.clipPath.top,
       width:cropWidth,
-      height:cropHeight,
-      originX: "left",
-      originY: "top",
-      top: cropMainTop,
-      left: cropMainLeft,
-      angle: this.clipPath.angle
+      height:cropHeight
     });
-    if(mainImage.clipPath != null)
-      mainImage.clipPath="";
-    mainImage.clipPath = actualClipping;
+    //This is clipping where the origin is the center of the main image!
+    let imgInstance = new fabric.Image.fromURL(dataUrl,function(img){
+      let image = img.set({
+        originX:"left",
+        originY:"top",
+        selectable:false
+      });
+      ImageEditor.canvas.remove(ImageEditor.mainImage);
+      ImageEditor.setMainImage(image);
+      ImageEditor.canvas.add(image);
+      ImageEditor.canvas.centerObject(image);
+      image.setCoords();
+    });
     this.canvas.remove(this.clipPath);
-    this.canvas.remove(actualClipping);
-    this.mainImage.dirty = true;
     this.canvas.renderAll();
     this.canCrop = false;
   }
+
+
+
 
   /**
    * This removes the image and will clear all information from the canvas
@@ -318,6 +298,7 @@ export class ImageEditorComponent implements OnInit {
     this.mainImage = false;
     this.mainImageExists = false;
     this.canvas.renderAll();
+    this.canSave = false;
   }
   
 }
