@@ -116,16 +116,6 @@ export class ImageEditorComponent implements OnInit {
    */
   setMainImage(image): boolean {
     this.mainImage = image; 
-    // this.mainImage.on('mousedblclick', function(){
-    //   console.log("Bounding Rect properties: "+ JSON.stringify(this.getBoundingRect()));
-    //   console.log("Left: " + this.left)
-    //   console.log("Top: " + this.top);
-    //   console.log("Center as x coordinate: " + this.getCenterPoint().x);
-    //   console.log("Center as y coordinate: " + this.getCenterPoint().y);
-    //   console.log("Object's ScaleX: " + this.scaleX + " Object's ScaleY: " + this.scaleY);
-    //   console.log("After zooming scaling values: " + JSON.stringify(this.getTotalObjectScaling()));
-    //   console.log("The border scale factor: " + this.borderScaleFactor);
-    // });
     return true;
   }
 
@@ -147,11 +137,13 @@ export class ImageEditorComponent implements OnInit {
    * @param event 
    */
   undo(event:any): void {
-    let canvasHere = this.canvas;
+    let ImageEditor = this;
     if(this.undoStack.length > 0){
       this.pushIntoStack(this.redoStack);
       let oldState = this.undoStack.pop();
-      this.canvas.loadFromJSON(oldState, canvasHere.renderAll.bind(canvasHere));
+      this.canvas.loadFromJSON(oldState, this.canvas.renderAll.bind(this.canvas), function(o,object){
+        ImageEditor.setMainImage(object);
+      });
     }
   }
 
@@ -164,11 +156,13 @@ export class ImageEditorComponent implements OnInit {
    */
   redo(event:any): void {
     console.log(this.redoStack);
-    let canvasHere = this.canvas;
+    let ImageEditor = this;
     if(this.redoStack.length > 0){
       this.pushIntoStack(this.undoStack);
       let oldState = this.redoStack.pop();
-      this.canvas.loadFromJSON(oldState,canvasHere.renderAll.bind(canvasHere));
+      this.canvas.loadFromJSON(oldState, this.canvas.renderAll.bind(this.canvas), function(o,object){
+        ImageEditor.setMainImage(object);
+      });
     }
   }
 
@@ -257,36 +251,6 @@ export class ImageEditorComponent implements OnInit {
    * so it can be rerendered.
    * @param event 
    */
-  // crop(event) : void {
-  //   let originOfMainX = this.mainImage.getCenterPoint().x;
-  //   let originOfMainY = this.mainImage.getCenterPoint().y;
-  //   //This moves the crop according to the center of the main image
-  //   let cropMainTop = this.clipPath.top - originOfMainY;
-  //   let cropMainLeft = this.clipPath.left - originOfMainX; 
-  //   //If the user rescales, then the cropping will follow the rescaling
-  //   let cropWidth = this.clipPath.width*this.clipPath.scaleX; 
-  //   let cropHeight = this.clipPath.height*this.clipPath.scaleY;
-
-  //   //This is clipping where the origin is the center of the main image!
-  //   let actualClipping = new fabric.Rect({
-  //     width:cropWidth,
-  //     height:cropHeight,
-  //     originX: "left",
-  //     originY: "top",
-  //     top: cropMainTop,
-  //     left: cropMainLeft,
-  //   });
-  //   if(this.mainImage.clipPath != null)
-  //     this.mainImage.clipPath="";
-  //   this.mainImage.clipPath = actualClipping;
-  //   this.canvas.remove(this.clipPath);
-  //   this.canvas.remove(actualClipping);
-  //   this.mainImage.dirty = true;
-  //   this.canvas.renderAll();
-  //   this.canCrop = false;
-  // }
-
-
   crop(event) : void {
     this.canvas.setViewportTransform([1,0,0,1,0,0]);
     let ImageEditor = this;
@@ -322,6 +286,7 @@ export class ImageEditorComponent implements OnInit {
     this.canvas.remove(this.clipPath);
     this.canvas.renderAll();
     this.canCrop = false;
+    console.log(JSON.stringify(this.mainImage));
   }
 
 
