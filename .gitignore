@@ -1,3 +1,5 @@
 .idea
 node_modules
-inference_Sony
+photo-ai/src/assets/inference_Sony/*
+!photo-ai/src/assets/inference_Sony/inference_Sony
+!photo-ai/src/assets/inference_Sony/README*
