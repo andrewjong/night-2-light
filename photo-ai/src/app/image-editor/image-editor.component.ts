@@ -44,7 +44,6 @@ export class ImageEditorComponent implements OnInit {
         var delta = opt.e.deltaY;
         var pointer = this.getPointer(opt.e);
         var zoom = this.getZoom();
-        console.log("This is the zoom value: " + zoom);
         zoom = zoom + delta/200;
         if (zoom > 20) zoom = 20;
         if (zoom < 0.01) zoom = 0.01;
@@ -83,7 +82,6 @@ export class ImageEditorComponent implements OnInit {
 
     reader.onload = function (event: Event) {
       let imageElement = reader.result;
-      console.log(imageElement);
       let imgInstance = new fabric.Image.fromURL(imageElement, function(img) {
         let image = img.set({
             originX: "left",
@@ -155,7 +153,6 @@ export class ImageEditorComponent implements OnInit {
    * @param event 
    */
   redo(event:any): void {
-    console.log(this.redoStack);
     let ImageEditor = this;
     if(this.redoStack.length > 0){
       this.pushIntoStack(this.undoStack);
@@ -286,7 +283,6 @@ export class ImageEditorComponent implements OnInit {
     this.canvas.remove(this.clipPath);
     this.canvas.renderAll();
     this.canCrop = false;
-    console.log(JSON.stringify(this.mainImage));
   }
 
 
