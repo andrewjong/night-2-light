@@ -1,14 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import 'fabric';
 import 'jquery';
-import { Canvas } from 'fabric/fabric-impl';
+import {ConfirmationService} from 'primeng/api';
+
 declare const fabric: any;
 
 
 @Component({
   selector: 'app-image-editor',
   templateUrl: './image-editor.component.html',
-  styleUrls: ['./image-editor.component.css']
+  styleUrls: ['./image-editor.component.css'],
+  providers: [ConfirmationService]
 })
 export class ImageEditorComponent implements OnInit {
   canCrop: boolean = false;
@@ -19,7 +21,7 @@ export class ImageEditorComponent implements OnInit {
   undoStack: Object[] = [];
   redoStack: Object[] =[];
 
-  constructor(){}
+  constructor(private confirmationService: ConfirmationService){}
 
   /**
    * This will allow to instantiate the canvas and will apply zoom onto canvas.
@@ -60,15 +62,25 @@ export class ImageEditorComponent implements OnInit {
     uploadBtn.click();
   }
 
-
-
   /**
    * This will allow the image to show on the canvas after uploading
    * @param event 
    */
   previewFile(event:any): void {
     let reader = new FileReader();
-    reader.readAsDataURL(event.target.files[0]);
+    const file: Blob = event.target.files[0];
+    console.log(file.type);
+    reader.readAsDataURL(file);
+
+    //Need some sort of if-check here!
+    if(file.type.includes('arw')) {
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to convert photo from dark to light?',
+      accept: () => {
+        //Actual logic to perform a confirmation
+      },
+    });
+    }
 
     let ImageEditor = this;
     let canvasHere = this.canvas;
