@@ -84,6 +84,14 @@ The specific buttons styling
     content:"Convert";
 }
 
+#rotate-left-btn::after {
+    content:"Turn -90°";
+}
+
+#rotate-right-btn::after {
+    content:"Turn 90°";
+}
+
 #tune-btn::after {
     content:"Tune";
 }

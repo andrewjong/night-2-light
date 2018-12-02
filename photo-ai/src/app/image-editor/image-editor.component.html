@@ -7,16 +7,24 @@
 
 <div class="center">
     <button id="upload-btn" (click)="uploadFile($event)">
-      <span class="material-icons">attach_file</span>
+      <span class="material-icons">publish</span>
     </button>
     <input id="upload" type="file" accept="image/*" hidden="hidden" (change)="previewFile($event)"/>
 
-    <button id="camera-btn" value="Camera" >
+    <button id="camera-btn" value="Camera">
         <span class="material-icons">camera</span>
       </button>
 
-    <button id="convert-btn" value="Convert" >
+    <button id="convert-btn" value="Convert">
         <span class="material-icons">wb_sunny</span>
+      </button>
+
+      <button id="rotate-left-btn" value="Turn Left" (click)="rotate(-90)">
+        <span class="material-icons">rotate_left</span>
+      </button>
+
+      <button id="rotate-right-btn" value="Turn Right" (click)="rotate(90)">
+        <span class="material-icons">rotate_right</span>
       </button>
 
       <button id="tune-btn" value="Tune" >
