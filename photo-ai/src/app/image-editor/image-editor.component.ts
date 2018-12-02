@@ -258,6 +258,17 @@ export class ImageEditorComponent implements OnInit {
     this.clipPath = clippath;
   }
   
+
+  /**
+   * This will allow the user to remove the crop area
+   * @param event 
+   */
+  removeCropArea(event) : void {
+    this.canvas.remove(this.clipPath);
+    this.clipPath = null;
+    this.canCrop = false;
+    this.canvas.renderAll();
+  }
   
   
   
@@ -334,22 +345,36 @@ export class ImageEditorComponent implements OnInit {
    * @param event 
    */
   clear(event:any) :void {
-    if(this.canCrop)
-    this.canCrop = false;
     let active = this.canvas.getActiveObject();
     let canvasObjects = this.canvas.getObjects();
     let length=canvasObjects.length;
     for (let i= 0; i< length; i++) {
       this.canvas.remove(canvasObjects[i]);
     } 
-    this.undoStack=[];
-    this.redoStack=[];
-    this.mainImage = false;
-    this.mainImageExists = false;
+    this.resetAllValues();
     this.canvas.renderAll();
-    this.canSave = false;
   }
   
+
+  /**
+   * This returns all instance variables back to default values
+   */
+  resetAllValues(): void {
+    this.canCrop = false;
+    this.undoStack=[];
+    this.redoStack=[];
+    this.mainImage = null;
+    this.mainImageExists = false;
+    this.canSave = false;
+    this.isOriginalOrientation = true;
+    this.clipPath = null;
+    this.savedCoords = [];
+    this.savedBound = [];
+    this.left=null;
+    this.top=null;
+    this.width = null;
+    this. height = null;
+  }
   
 
 

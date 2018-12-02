@@ -104,6 +104,10 @@ The specific buttons styling
     content:"Apply";
 }
 
+#removeCrop-btn::after {
+    content:"Exit";
+}
+
 #undo-btn::after {
     content:"Undo";
 }
