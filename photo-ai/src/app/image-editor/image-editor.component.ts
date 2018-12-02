@@ -20,6 +20,7 @@ export class ImageEditorComponent implements OnInit {
   mainImage:any;
   mainImageExists:boolean;
   canSave:boolean;
+  isTuning:boolean;
   undoStack: Object[]=[];
   redoStack: Object[]=[];
   savedCoords: Point[]=[];
@@ -97,7 +98,7 @@ export class ImageEditorComponent implements OnInit {
             originY: "top",
             selectable: false
           });
-          if(MainImageExist == null) {
+          if(MainImageExist == false) {
             ImageEditor.setMainImage(image);
           }
           else {
@@ -113,12 +114,13 @@ export class ImageEditorComponent implements OnInit {
           ImageEditor.canSave = true;
           ImageEditor.isOriginalOrientation = true
         })};
+    this.mainImageExists = true;
     event.target.value="";
   }
 
 
   /**
-   * 
+   * This will save the bounding rectangle coordinates, original and rotated
    */
   saveOrientationCoords(): void {
     this.savedCoords["original"]= new fabric.Point(this.mainImage.left,this.mainImage.top);
@@ -152,6 +154,8 @@ export class ImageEditorComponent implements OnInit {
   pushIntoStack(stack:Object[]) : void{
     let data = this.canvas.toJSON();
     stack.push(data);
+    if(stack.length > 3)
+      stack.shift();
   }
 
 
@@ -161,6 +165,8 @@ export class ImageEditorComponent implements OnInit {
    * @param event 
    */
   undo(event:any): void {
+    if(this.mainImageExists == false)
+      return;
     let ImageEditor = this;
     if(this.undoStack.length > 0){
       this.pushIntoStack(this.redoStack);
@@ -179,6 +185,8 @@ export class ImageEditorComponent implements OnInit {
    * @param event 
    */
   redo(event:any): void {
+    if(this.mainImageExists == false)
+      return;
     let ImageEditor = this;
     if(this.redoStack.length > 0){
       this.pushIntoStack(this.undoStack);
@@ -204,6 +212,8 @@ export class ImageEditorComponent implements OnInit {
    * @param event 
    */
   showCropArea(event) : void {
+    if(this.mainImageExists == false)
+      return;
     this.canCrop = true;
     this.pushIntoStack(this.undoStack); //this will push into the undo stack
     let topBorder :number;
@@ -215,7 +225,6 @@ export class ImageEditorComponent implements OnInit {
       this.top = this.savedCoords["rotated"].y;
       this.width = this.mainImage.height;
       this.height = this.mainImage.width;
-     
       topBorder = this.savedBound["rotated"].tl.y;
       leftBorder = this.savedBound["rotated"].tl.x;
       rightBorder = this.savedBound["rotated"].tr.x;
@@ -225,7 +234,6 @@ export class ImageEditorComponent implements OnInit {
       this.top = this.savedCoords["original"].y;
       this.width = this.mainImage.width;
       this.height = this.mainImage.height;
-      console.log(this.savedBound["original"]);
       topBorder = this.savedBound["original"].tl.y;
       leftBorder = this.savedBound["original"].tl.x;
       rightBorder = this.savedBound["original"].tr.x;
@@ -329,6 +337,8 @@ export class ImageEditorComponent implements OnInit {
    * @param number 
    */
   rotate(number: number) : void {
+    if(this.mainImageExists == false)
+      return;
     let currentAngle = this.mainImage.angle;
     this.mainImage.rotate((currentAngle + number) % 360);
     this.mainImage.setCoords(); 
@@ -347,6 +357,8 @@ export class ImageEditorComponent implements OnInit {
    * @param event 
    */
   clear(event:any) :void {
+    if(this.mainImageExists == false)
+      return;
     let active = this.canvas.getActiveObject();
     let canvasObjects = this.canvas.getObjects();
     let length=canvasObjects.length;
@@ -376,8 +388,6 @@ export class ImageEditorComponent implements OnInit {
     this.top=null;
     this.width = null;
     this.height = null;
-    const dlBtn = document.getElementById("save");
-    dlBtn.setAttribute("href","");
     this.canvas.setViewportTransform([1,0,0,1,0,0]);
   }
   
@@ -388,6 +398,8 @@ export class ImageEditorComponent implements OnInit {
    * @param event 
    */
   saveFile(event:any): void {
+    if(this.mainImageExists == false)
+      return;
     if(this.canSave){
       this.canvas.setViewportTransform([1,0,0,1,0,0]); 
       if(!this.isOriginalOrientation){
