@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import 'fabric';
 import 'jquery';
+import * as JSZip from 'jszip';
+import 'file-saver';
 import { Canvas, Point } from 'fabric/fabric-impl';
 declare const fabric: any;
 
@@ -373,7 +375,10 @@ export class ImageEditorComponent implements OnInit {
     this.left=null;
     this.top=null;
     this.width = null;
-    this. height = null;
+    this.height = null;
+    const dlBtn = document.getElementById("save");
+    dlBtn.setAttribute("href","");
+    this.canvas.setViewportTransform([1,0,0,1,0,0]);
   }
   
 
@@ -385,7 +390,6 @@ export class ImageEditorComponent implements OnInit {
   saveFile(event:any): void {
     if(this.canSave){
       this.canvas.setViewportTransform([1,0,0,1,0,0]); 
-      console.log(this.isOriginalOrientation);
       if(!this.isOriginalOrientation){
         this.left = this.savedCoords["rotated"].x;
         this.top = this.savedCoords["rotated"].y;
@@ -404,8 +408,14 @@ export class ImageEditorComponent implements OnInit {
         width:this.width,
         height:this.height
       });
-      const dlBtn = document.getElementById("save");
-      dlBtn.setAttribute("href",dataUrl);
+
+      let imageData = dataUrl.split(',')[1];
+      let zip = new JSZip();
+      zip.file("download.png",imageData,{base64:true});
+      zip.generateAsync({type:"blob"}).then(function(content){
+        saveAs(content,"image.zip");
+      });
+
     }
   }
 

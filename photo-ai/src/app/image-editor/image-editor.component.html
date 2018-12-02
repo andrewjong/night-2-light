@@ -58,13 +58,14 @@
   
 
 
-
   <div class="right">
     <button id="save-btn" value="Save" (click)="saveFile($event)" *ngIf="!canCrop">
-      <span class="material-icons"><a id="save" download="editedImg">save</a></span>
+      <span class="material-icons">save</span>
     </button>    
   </div>
 
 <div class="canvas-container">
   <canvas id="image-view" width="1600px" height="800px" ></canvas>
 </div>
+
+
