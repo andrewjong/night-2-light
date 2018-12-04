@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import 'fabric';
 import 'jquery';
 import {ConfirmationService} from 'primeng/api';
-
 import * as JSZip from 'jszip';
 import 'file-saver';
 import { Canvas, Point } from 'fabric/fabric-impl';
@@ -214,6 +213,18 @@ export class ImageEditorComponent implements OnInit {
   //   }
   // }
   
+
+
+
+
+
+
+  
+  
+  
+  
+  
+
   /**
    * This will show the applyable crop area
    * @param event 

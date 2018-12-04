@@ -48,10 +48,11 @@
     <button id="undo-btn" value="Undo" (click)="undo($event)" *ngIf="!canCrop">
       <span class="material-icons">undo</span>
     </button>
-
+    
     <button id="redo-btn" value="Redo" (click)="redo($event)" *ngIf="!canCrop">
       <span class="material-icons">redo</span>
     </button>
+
     
     <button id="clear-btn" value="Remove" (click)="clear($event)" *ngIf="!canCrop">
       <span class="material-icons">clear</span>
