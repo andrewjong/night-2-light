@@ -3,7 +3,6 @@ const {app, BrowserWindow} = require('electron');
 const path = require('path');
 const url = require('url');
 const notify = require('electron-main-notification');
-let {PythonShell} = require('python-shell')
 
 let win;
 function createWindow () {
