@@ -3,6 +3,8 @@
 </div>
 
 
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle" width="425"></p-confirmDialog>
+<!--<button type="text" (click)="confirm()" pButton icon="pi pi-check" label="Confirm"></button>-->
 
 
 <div class="center">
@@ -42,11 +44,11 @@
     <button id="removeCrop-btn" value="Exit" (click)="removeCropArea($event)" *ngIf="canCrop">
       <span class="material-icons">clear</span>
     </button>
-    
+
     <button id="undo-btn" value="Undo" (click)="undo($event)" *ngIf="!canCrop">
       <span class="material-icons">undo</span>
     </button>
-    
+
     <button id="redo-btn" value="Redo" (click)="redo($event)" *ngIf="!canCrop">
       <span class="material-icons">redo</span>
     </button>

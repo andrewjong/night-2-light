@@ -1,16 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import 'fabric';
 import 'jquery';
+import {ConfirmationService} from 'primeng/api';
+
 import * as JSZip from 'jszip';
 import 'file-saver';
 import { Canvas, Point } from 'fabric/fabric-impl';
 declare const fabric: any;
 
-
 @Component({
   selector: 'app-image-editor',
   templateUrl: './image-editor.component.html',
-  styleUrls: ['./image-editor.component.css']
+  styleUrls: ['./image-editor.component.css'],
+  providers: [ConfirmationService]
 })
 export class ImageEditorComponent implements OnInit {
   canCrop: boolean;
@@ -30,10 +32,7 @@ export class ImageEditorComponent implements OnInit {
   width: number;
   height: number;
 
-  constructor() { 
-   
-  }
-
+  constructor(private confirmationService: ConfirmationService){}
 
   /**
    * This will allow to instantiate the canvas and will apply zoom onto canvas.
@@ -62,9 +61,7 @@ export class ImageEditorComponent implements OnInit {
         opt.e.stopPropagation();
       });
     }
-
-
-
+    
   /**
    * This will allow the person to upload the file after clicking the button to trigger 
    * the preview file 
@@ -74,21 +71,30 @@ export class ImageEditorComponent implements OnInit {
     const uploadBtn = document.getElementById("upload");
     uploadBtn.click();
   }
-
-
-
+  
   /**
    * This will allow the image to show on the canvas after uploading
    * @param event 
    */
   previewFile(event:any): void {
     let reader = new FileReader();
-    reader.readAsDataURL(event.target.files[0]);
+    const file: Blob = event.target.files[0];
+    console.log(file.type);
+    reader.readAsDataURL(file);
+
+    //Need some sort of if-check here!
+    if(file.type.includes('arw')) {
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to convert photo from dark to light?',
+      accept: () => {
+        //Actual logic to perform a confirmation
+      },
+    });
+    }
 
     let ImageEditor = this;
     let canvasHere = this.canvas;
     let MainImageExist = this.mainImageExists;
-
 
     reader.onload = function (event: Event) {
       let imageElement = reader.result;
@@ -132,21 +138,15 @@ export class ImageEditorComponent implements OnInit {
     this.mainImage.rotate(0);
     this.mainImage.setCoords();
   }
-
-
-
-
+  
   /**
    * This will set the main image to be edited on
    * @param image 
    */
   setMainImage(image): boolean {
-    this.mainImage = image; 
+    this.mainImage = image;
     return true;
   }
-
-
-
   /**
    * This will push into either the undo or redo stack.
    * @param stack 
@@ -157,9 +157,7 @@ export class ImageEditorComponent implements OnInit {
     if(stack.length > 3)
       stack.shift();
   }
-
-
-
+  
   /**
    * This will allow the user to undo changes up until 3 times.
    * @param event 
@@ -176,9 +174,6 @@ export class ImageEditorComponent implements OnInit {
       });
     }
   }
-
-
-
 
   /**
    * This will allow the user to redo changes up until 3 times.
@@ -197,15 +192,27 @@ export class ImageEditorComponent implements OnInit {
     }
   }
 
-
-
-
-
-
-  
-  
-  
-  
+  //
+  //
+  // /**
+  //  * This will save the image from the canvas
+  //  * @param event 
+  //  */
+  // saveFile(event:any): void {
+  //   this.canvas.setViewportTransform([1,0,0,1,0,0]);
+  //   if(this.canSave){
+  //       let dataUrl = this.canvas.toDataURL({
+  //         format:'png',
+  //         left:this.mainImage.left,
+  //         top:this.mainImage.top,
+  //         width:this.mainImage.width,
+  //         height:this.mainImage.height,
+  //       });
+  //       const dlBtn = document.getElementById("save");
+  //       dlBtn.setAttribute("href",dataUrl);
+  //
+  //   }
+  // }
   
   /**
    * This will show the applyable crop area
@@ -280,14 +287,6 @@ export class ImageEditorComponent implements OnInit {
     this.canvas.renderAll();
   }
   
-  
-  
-  
-  
-  
-  
-  
-  
   /**
    * This will apply the crop form the cropArea
    * This origin for the cropping is based on the center of the main image.
@@ -329,9 +328,6 @@ export class ImageEditorComponent implements OnInit {
     this.canCrop = false;
   }
   
-  
-  
-  
   /**
    * This will allow the image to rotate
    * @param number 
@@ -347,10 +343,6 @@ export class ImageEditorComponent implements OnInit {
     else this.isOriginalOrientation = false; 
     this.canvas.renderAll();
   }
-  
-  
-  
-  
   
   /**
    * This removes the image and will clear all information from the canvas
@@ -369,7 +361,6 @@ export class ImageEditorComponent implements OnInit {
     this.canvas.renderAll();
   }
   
-
   /**
    * This returns all instance variables back to default values
    */
@@ -390,8 +381,6 @@ export class ImageEditorComponent implements OnInit {
     this.height = null;
     this.canvas.setViewportTransform([1,0,0,1,0,0]);
   }
-  
-
 
   /**
    * This will save the image from the canvas
@@ -427,10 +416,7 @@ export class ImageEditorComponent implements OnInit {
       zip.generateAsync({type:"blob"}).then(function(content){
         saveAs(content,"image.zip");
       });
-
     }
   }
-
-
-
+  
 }
