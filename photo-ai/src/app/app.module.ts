@@ -1,18 +1,14 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-
-import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {RouterModule} from "@angular/router";
-import {AppRoutingModule} from "./app-routing-module";
-import { HomeComponent } from './home/home.component';
-import {FileUploadModule} from 'primeng/fileupload';
-import {ButtonModule} from 'primeng/button';
-import {ToolbarModule} from 'primeng/toolbar';
-import {SplitButtonModule} from 'primeng/splitbutton';
 import {WebcamModule} from 'ngx-webcam';
-import { ImageEditorComponent } from './image-editor/image-editor.component';
-import { NgxElectronModule } from 'ngx-electron';
+import {ImageEditorComponent} from './image-editor/image-editor.component';
+import {NgxElectronModule} from 'ngx-electron';
+import {AppComponent} from "./app.component";
+import {NgModule} from "@angular/core";
+import {HomeComponent} from "./home/home.component";
+import {BrowserModule} from "@angular/platform-browser";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {AppRoutingModule} from "./app-routing-module";
+import {ButtonModule, ConfirmDialogModule, FileUploadModule, SplitButtonModule, ToolbarModule} from "primeng/primeng";
+import {RouterModule} from "@angular/router";
 
 @NgModule({
   declarations: [
@@ -29,7 +25,8 @@ import { NgxElectronModule } from 'ngx-electron';
     ToolbarModule,
     SplitButtonModule,
     WebcamModule,
-    NgxElectronModule
+    NgxElectronModule,
+    ConfirmDialogModule
   ],
   exports: [RouterModule],
   providers: [],
