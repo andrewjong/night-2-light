@@ -1,11 +1,16 @@
-let {PythonShell} = require('python-shell');
+let { shelljs } = require("shelljs");
 
-function pyRun() {
-  console.log('Pyrunner started')
-  var some_arg = '';
-  PythonShell.run('hello.py', {args: [some_arg]}, function (err, results) {
-    if (err) throw err;
-    // results is an array consisting of messages collected during execution
-    console.log('results: %j', results);
-  })
+function pyRun(input, output_dir, ratio = 100, callback) {
+  console.log('Machine Learning inference started')
+
+  if (callback === undefined) {
+    callback = () => console.log("Inference done!")
+  }
+
+  if (shelljs.exec(
+    `../inference_Sony/inference_Sony ${input} -o ${output_dir} -r ${ratio}`,
+    callback = callback
+  ).code !== 0) {
+    console.error("Inference script failed!")
+  }
 }

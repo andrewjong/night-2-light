@@ -3,7 +3,6 @@ import {Observable, Subject} from "rxjs";
 import {WebcamImage} from "ngx-webcam";
 import {ElectronService} from "ngx-electron";
 
-// let {PythonShell} = require('python-shell')
 
 declare function pyRun(): any;
 @Component({
