@@ -9,14 +9,24 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {AppRoutingModule} from "./app-routing-module";
 import {ButtonModule, ConfirmDialogModule, FileUploadModule, SplitButtonModule, ToolbarModule} from "primeng/primeng";
 import {RouterModule} from "@angular/router";
+import {ngxLoadingAnimationTypes, NgxLoadingModule} from "ngx-loading";
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    ImageEditorComponent
+    ImageEditorComponent,
   ],
   imports: [
+    NgxLoadingModule.forRoot({
+      animationType: ngxLoadingAnimationTypes.circleSwish,
+      fullScreenBackdrop: true,
+      backdropBackgroundColour: 'rgba(0,0,0,0.1)',
+      backdropBorderRadius: '4px',
+      primaryColour: '#ffffff',
+      secondaryColour: '#ffffff',
+      tertiaryColour: '#ffffff'
+    }),
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
@@ -26,7 +36,7 @@ import {RouterModule} from "@angular/router";
     SplitButtonModule,
     WebcamModule,
     NgxElectronModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
   ],
   exports: [RouterModule],
   providers: [],
