@@ -5,7 +5,6 @@ import {ConfirmationService} from 'primeng/api';
 import * as JSZip from 'jszip';
 import 'file-saver';
 import {Point} from 'fabric/fabric-impl';
-import {HttpClient} from '@angular/common/http';
 
 declare const fabric: any;
 
@@ -34,7 +33,7 @@ export class ImageEditorComponent implements OnInit {
   private height: number;
   public ngxLoading = false;
 
-  constructor(private confirmationService: ConfirmationService, private http: HttpClient) {}
+  constructor(private confirmationService: ConfirmationService) {}
 
   /**
    * This will allow to instantiate the canvas and will apply zoom onto canvas.
@@ -87,7 +86,7 @@ export class ImageEditorComponent implements OnInit {
       message: 'Are you sure that you want to convert photo from dark to light?',
       accept: () => {
         this.ngxLoading = true;
-        this.http.get('../data/navItems.json');
+        // this.http.get("../data/navItems.json")
         // Actual logic to perform a confirmation
       },
     });
