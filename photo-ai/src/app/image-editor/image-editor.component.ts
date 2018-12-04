@@ -2,10 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import 'fabric';
 import 'jquery';
 import {ConfirmationService} from 'primeng/api';
-
+import * as JSZip from 'jszip';
+import 'file-saver';
 import { Canvas, Point } from 'fabric/fabric-impl';
 declare const fabric: any;
-
 
 @Component({
   selector: 'app-image-editor',
@@ -14,14 +14,22 @@ declare const fabric: any;
   providers: [ConfirmationService]
 })
 export class ImageEditorComponent implements OnInit {
-  canCrop: boolean = false;
+  canCrop: boolean;
+  isOriginalOrientation: boolean;
   clipPath: any;
   canvas: any;
   mainImage:any;
   mainImageExists:boolean;
   canSave:boolean;
-  undoStack: Object[] = [];
-  redoStack: Object[] =[];
+  isTuning:boolean;
+  undoStack: Object[]=[];
+  redoStack: Object[]=[];
+  savedCoords: Point[]=[];
+  savedBound: Object[]=[];
+  left: number;
+  top: number;
+  width: number;
+  height: number;
 
   constructor(private confirmationService: ConfirmationService){}
 
@@ -33,13 +41,13 @@ export class ImageEditorComponent implements OnInit {
   ngOnInit() {
     this.canvas = new fabric.Canvas('image-view',{
       backgroundColor: 'rgb(0,0,0,.5)',
-      selectionColor: 'blue',
-      selectionLineWidth: 5
+      selectionColor: 'grey',
+      selectionLineWidth: 10
       });
-    let img = this.mainImage;
     this.canSave = false;
     this.mainImageExists = false;
-    let imageExists = this.mainImageExists;
+    this.canCrop = false;
+    this.isOriginalOrientation = true;
     this.canvas.on('mouse:wheel', function(opt) {
         var delta = opt.e.deltaY;
         var pointer = this.getPointer(opt.e);
@@ -52,9 +60,7 @@ export class ImageEditorComponent implements OnInit {
         opt.e.stopPropagation();
       });
     }
-
-
-
+    
   /**
    * This will allow the person to upload the file after clicking the button to trigger 
    * the preview file 
@@ -64,9 +70,7 @@ export class ImageEditorComponent implements OnInit {
     const uploadBtn = document.getElementById("upload");
     uploadBtn.click();
   }
-
-
-
+  
   /**
    * This will allow the image to show on the canvas after uploading
    * @param event 
@@ -91,7 +95,6 @@ export class ImageEditorComponent implements OnInit {
     let canvasHere = this.canvas;
     let MainImageExist = this.mainImageExists;
 
-
     reader.onload = function (event: Event) {
       let imageElement = reader.result;
       let imgInstance = new fabric.Image.fromURL(imageElement, function(img) {
@@ -100,7 +103,7 @@ export class ImageEditorComponent implements OnInit {
             originY: "top",
             selectable: false
           });
-          if(MainImageExist == null) {
+          if(MainImageExist == false) {
             ImageEditor.setMainImage(image);
           }
           else {
@@ -111,15 +114,30 @@ export class ImageEditorComponent implements OnInit {
           canvasHere.add(image);
           canvasHere.centerObject(image);
           image.setCoords();
+          ImageEditor.saveOrientationCoords();
           canvasHere.renderAll();
           ImageEditor.canSave = true;
+          ImageEditor.isOriginalOrientation = true
         })};
+    this.mainImageExists = true;
     event.target.value="";
   }
 
 
-
-
+  /**
+   * This will save the bounding rectangle coordinates, original and rotated
+   */
+  saveOrientationCoords(): void {
+    this.savedCoords["original"]= new fabric.Point(this.mainImage.left,this.mainImage.top);
+    this.savedBound["original"] = this.mainImage.aCoords;
+    this.mainImage.rotate(-90);
+    this.mainImage.setCoords();
+    this.savedCoords["rotated"]= new fabric.Point(this.mainImage.left,(this.mainImage.top-this.mainImage.width));
+    this.savedBound["rotated"] = {tl: this.mainImage.aCoords.tr,tr: this.mainImage.aCoords.br, br: this.mainImage.aCoords.bl, bl: this.mainImage.aCoords.tl};
+    this.mainImage.rotate(0);
+    this.mainImage.setCoords();
+  }
+  
   /**
    * This will set the main image to be edited on
    * @param image 
@@ -128,25 +146,24 @@ export class ImageEditorComponent implements OnInit {
     this.mainImage = image;
     return true;
   }
-
-
-
   /**
    * This will push into either the undo or redo stack.
    * @param stack 
    */
-  pushIntoStack(stack:object[]) : void{
+  pushIntoStack(stack:Object[]) : void{
     let data = this.canvas.toJSON();
     stack.push(data);
+    if(stack.length > 3)
+      stack.shift();
   }
-
-
-
+  
   /**
    * This will allow the user to undo changes up until 3 times.
    * @param event 
    */
   undo(event:any): void {
+    if(this.mainImageExists == false)
+      return;
     let ImageEditor = this;
     if(this.undoStack.length > 0){
       this.pushIntoStack(this.redoStack);
@@ -157,14 +174,13 @@ export class ImageEditorComponent implements OnInit {
     }
   }
 
-
-
-
   /**
    * This will allow the user to redo changes up until 3 times.
    * @param event 
    */
   redo(event:any): void {
+    if(this.mainImageExists == false)
+      return;
     let ImageEditor = this;
     if(this.redoStack.length > 0){
       this.pushIntoStack(this.undoStack);
@@ -175,51 +191,82 @@ export class ImageEditorComponent implements OnInit {
     }
   }
 
+  //
+  //
+  // /**
+  //  * This will save the image from the canvas
+  //  * @param event 
+  //  */
+  // saveFile(event:any): void {
+  //   this.canvas.setViewportTransform([1,0,0,1,0,0]);
+  //   if(this.canSave){
+  //       let dataUrl = this.canvas.toDataURL({
+  //         format:'png',
+  //         left:this.mainImage.left,
+  //         top:this.mainImage.top,
+  //         width:this.mainImage.width,
+  //         height:this.mainImage.height,
+  //       });
+  //       const dlBtn = document.getElementById("save");
+  //       dlBtn.setAttribute("href",dataUrl);
+  //
+  //   }
+  // }
+  
 
 
 
 
 
 
-  /**
-   * This will save the image from the canvas
-   * @param event 
-   */
-  saveFile(event:any): void {
-    this.canvas.setViewportTransform([1,0,0,1,0,0]);
-    if(this.canSave){
-        let dataUrl = this.canvas.toDataURL({
-          format:'png',
-          left:this.mainImage.left,
-          top:this.mainImage.top,
-          width:this.mainImage.width,
-          height:this.mainImage.height,
-        });
-        const dlBtn = document.getElementById("save");
-        dlBtn.setAttribute("href",dataUrl);
-
-    }
-  }
+  
+  
+  
+  
+  
 
   /**
    * This will show the applyable crop area
    * @param event 
    */
   showCropArea(event) : void {
+    if(this.mainImageExists == false)
+      return;
     this.canCrop = true;
     this.pushIntoStack(this.undoStack); //this will push into the undo stack
+    let topBorder :number;
+    let leftBorder :number;
+    let rightBorder :number;
+    let bottomBorder :number;
+    if(!this.isOriginalOrientation){
+      this.left = this.savedCoords["rotated"].x;
+      this.top = this.savedCoords["rotated"].y;
+      this.width = this.mainImage.height;
+      this.height = this.mainImage.width;
+      topBorder = this.savedBound["rotated"].tl.y;
+      leftBorder = this.savedBound["rotated"].tl.x;
+      rightBorder = this.savedBound["rotated"].tr.x;
+      bottomBorder = this.savedBound["rotated"].br.y;
+    } else {
+      this.left = this.savedCoords["original"].x;
+      this.top = this.savedCoords["original"].y;
+      this.width = this.mainImage.width;
+      this.height = this.mainImage.height;
+      topBorder = this.savedBound["original"].tl.y;
+      leftBorder = this.savedBound["original"].tl.x;
+      rightBorder = this.savedBound["original"].tr.x;
+      bottomBorder = this.savedBound["original"].br.y;
+    }
     let clippath = new fabric.Rect({
-      width:this.mainImage.width,
-      height:this.mainImage.height,
+      width:this.width,
+      height:this.height,
       opacity: 0,
       originX: "left",
       originY: "top",
+      left:this.left,
+      top:this.top,
       lockRotation: true
     });
-    let topBorder = this.mainImage.aCoords.tl.y;
-    let leftBorder = this.mainImage.aCoords.tl.x;
-    let rightBorder = this.mainImage.aCoords.tr.x;
-    let bottomBorder = this.mainImage.aCoords.br.y;
     clippath.on('moved', function(){
       if(this.aCoords.tl.y < topBorder)
         this.top = topBorder;
@@ -237,17 +284,20 @@ export class ImageEditorComponent implements OnInit {
     clippath.setCoords();
     canvasHere.renderAll();
     this.clipPath = clippath;
-    }
+  }
   
+
+  /**
+   * This will allow the user to remove the crop area
+   * @param event 
+   */
+  removeCropArea(event) : void {
+    this.canvas.remove(this.clipPath);
+    this.clipPath = null;
+    this.canCrop = false;
+    this.canvas.renderAll();
+  }
   
-
-
-
-
-
-
-
-
   /**
    * This will apply the crop form the cropArea
    * This origin for the cropping is based on the center of the main image.
@@ -258,15 +308,10 @@ export class ImageEditorComponent implements OnInit {
   crop(event) : void {
     this.canvas.setViewportTransform([1,0,0,1,0,0]);
     let ImageEditor = this;
-    let originOfMainX = this.mainImage.getCenterPoint().x;
-    let originOfMainY = this.mainImage.getCenterPoint().y;
-    //This moves the crop according to the center of the main image
-    let cropMainTop = this.clipPath.top - originOfMainY;
-    let cropMainLeft = this.clipPath.left - originOfMainX; 
     //If the user rescales, then the cropping will follow the rescaling
     let cropWidth = this.clipPath.width*this.clipPath.scaleX; 
     let cropHeight = this.clipPath.height*this.clipPath.scaleY;
-
+    
     let dataUrl = this.canvas.toDataURL({
       format:'png',
       left:this.clipPath.left,
@@ -283,37 +328,106 @@ export class ImageEditorComponent implements OnInit {
       });
       ImageEditor.canvas.remove(ImageEditor.mainImage);
       ImageEditor.setMainImage(image);
+      ImageEditor.isOriginalOrientation = true;
       ImageEditor.canvas.add(image);
       ImageEditor.canvas.centerObject(image);
+      ImageEditor.saveOrientationCoords();
       image.setCoords();
     });
     this.canvas.remove(this.clipPath);
     this.canvas.renderAll();
     this.canCrop = false;
   }
-
-
-
-
+  
+  /**
+   * This will allow the image to rotate
+   * @param number 
+   */
+  rotate(number: number) : void {
+    if(this.mainImageExists == false)
+      return;
+    let currentAngle = this.mainImage.angle;
+    this.mainImage.rotate((currentAngle + number) % 360);
+    this.mainImage.setCoords(); 
+    if(Math.abs(this.mainImage.angle) == 0 || Math.abs(this.mainImage.angle) == 180)
+      this.isOriginalOrientation = true;
+    else this.isOriginalOrientation = false; 
+    this.canvas.renderAll();
+  }
+  
   /**
    * This removes the image and will clear all information from the canvas
    * @param event 
    */
   clear(event:any) :void {
-    if(this.canCrop)
-      this.canCrop = false;
+    if(this.mainImageExists == false)
+      return;
     let active = this.canvas.getActiveObject();
     let canvasObjects = this.canvas.getObjects();
     let length=canvasObjects.length;
     for (let i= 0; i< length; i++) {
       this.canvas.remove(canvasObjects[i]);
     } 
+    this.resetAllValues();
+    this.canvas.renderAll();
+  }
+  
+  /**
+   * This returns all instance variables back to default values
+   */
+  resetAllValues(): void {
+    this.canCrop = false;
     this.undoStack=[];
     this.redoStack=[];
-    this.mainImage = false;
+    this.mainImage = null;
     this.mainImageExists = false;
-    this.canvas.renderAll();
     this.canSave = false;
+    this.isOriginalOrientation = true;
+    this.clipPath = null;
+    this.savedCoords = [];
+    this.savedBound = [];
+    this.left=null;
+    this.top=null;
+    this.width = null;
+    this.height = null;
+    this.canvas.setViewportTransform([1,0,0,1,0,0]);
+  }
+
+  /**
+   * This will save the image from the canvas
+   * @param event 
+   */
+  saveFile(event:any): void {
+    if(this.mainImageExists == false)
+      return;
+    if(this.canSave){
+      this.canvas.setViewportTransform([1,0,0,1,0,0]); 
+      if(!this.isOriginalOrientation){
+        this.left = this.savedCoords["rotated"].x;
+        this.top = this.savedCoords["rotated"].y;
+        this.width = this.mainImage.height;
+        this.height = this.mainImage.width;
+      } else {
+        this.left = this.savedCoords["original"].x;
+        this.top = this.savedCoords["original"].y;
+        this.width = this.mainImage.width;
+        this.height = this.mainImage.height;
+      }
+      let dataUrl = this.canvas.toDataURL({
+        format:'png',
+        left:this.left,
+        top:this.top,
+        width:this.width,
+        height:this.height
+      });
+
+      let imageData = dataUrl.split(',')[1];
+      let zip = new JSZip();
+      zip.file("download.png",imageData,{base64:true});
+      zip.generateAsync({type:"blob"}).then(function(content){
+        saveAs(content,"image.zip");
+      });
+    }
   }
   
 }

@@ -4,6 +4,7 @@
     position: relative;
     --main-font-color:#a4a4a4;
     --hover-font-color:#2ecc71; 
+    --focus-font-color: #134f2c;
 }
 
 
@@ -69,7 +70,7 @@ The specific buttons styling
 ====================================================================================================================================
 */
 #logo::after{
-    content: "CC Editor";
+    content: "Photo Editor";
 }
 
 #upload-btn::after {
@@ -84,6 +85,14 @@ The specific buttons styling
     content:"Convert";
 }
 
+#rotate-left-btn::after {
+    content:"Turn -90°";
+}
+
+#rotate-right-btn::after {
+    content:"Turn 90°";
+}
+
 #tune-btn::after {
     content:"Tune";
 }
@@ -94,6 +103,10 @@ The specific buttons styling
 
 #apply-btn::after {
     content:"Apply";
+}
+
+#removeCrop-btn::after {
+    content:"Exit";
 }
 
 #undo-btn::after {
@@ -119,6 +132,7 @@ button {
     margin: 0;
     padding: 20px;
 }
+
 
 button::after {
     position:absolute;
