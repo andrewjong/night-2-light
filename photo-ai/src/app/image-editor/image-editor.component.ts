@@ -30,10 +30,7 @@ export class ImageEditorComponent implements OnInit {
   width: number;
   height: number;
 
-  constructor() { 
-   
-  }
-
+  constructor(){}
 
   /**
    * This will allow to instantiate the canvas and will apply zoom onto canvas.
@@ -202,11 +199,13 @@ export class ImageEditorComponent implements OnInit {
 
 
 
+
   
   
   
   
   
+
   /**
    * This will show the applyable crop area
    * @param event 

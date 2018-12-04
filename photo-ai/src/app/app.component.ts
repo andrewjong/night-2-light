@@ -1,4 +1,5 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {ElectronService} from "ngx-electron";
 
 
 @Component({
@@ -6,6 +7,18 @@ import {Component} from '@angular/core';
   template: `
     <div class="container" align="center">
       <router-outlet></router-outlet>
-    </div>    `
+    </div> `
 })
-export class AppComponent {}
+export class AppComponent implements OnInit{
+
+  constructor(private _electronService: ElectronService){}
+
+  public playPingPong() {
+  }
+
+  ngOnInit(): void {
+    console.log("Result of isElectronApp is: " +this._electronService.isElectronApp)
+
+  }
+
+}

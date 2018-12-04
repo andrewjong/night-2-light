@@ -13,6 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "baseHref": "",
             "outputPath": "dist/photo-ai",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -30,7 +31,8 @@
               "node_modules/primeng/resources/primeng.min.css"
             ],
             "scripts": [
-              "node_modules/fabric/dist/fabric.js"
+              "node_modules/fabric/dist/fabric.js",
+              "src/assets/js/pyRunner.js"
             ]
           },
           "configurations": {

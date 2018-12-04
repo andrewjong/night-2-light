@@ -12,6 +12,7 @@ import {ToolbarModule} from 'primeng/toolbar';
 import {SplitButtonModule} from 'primeng/splitbutton';
 import {WebcamModule} from 'ngx-webcam';
 import { ImageEditorComponent } from './image-editor/image-editor.component';
+import { NgxElectronModule } from 'ngx-electron';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { ImageEditorComponent } from './image-editor/image-editor.component';
     ButtonModule,
     ToolbarModule,
     SplitButtonModule,
-    WebcamModule
+    WebcamModule,
+    NgxElectronModule
   ],
   exports: [RouterModule],
   providers: [],
