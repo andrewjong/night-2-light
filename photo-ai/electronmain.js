@@ -8,20 +8,18 @@ let win;
 function createWindow () {
   const windowOptions = {width: 1400, height: 900, show: false};
   win = new BrowserWindow(windowOptions); // load the dist folder from Angular
-
-
   win.on('closed', () => {
     win = null
   });
 
   win = Splashscreen.initSplashScreen({
     windowOpts: windowOptions,
-    templateUrl: path.join(__dirname, '', 'hangman.svg'),
+    templateUrl: path.join(__dirname, '', 'day-night.png'),
     delay: 0, // force show immediately since example will load fast
     minVisible: 1500, // show for 1.5s so example is obvious
     splashScreenOpts: {
-      height: 500,
-      width: 500,
+      height: 512,
+      width: 512,
       transparent: true,
     },
   });
@@ -30,46 +28,27 @@ function createWindow () {
     protocol: 'file:',
     slashes: true
   });
-  console.log(fileurl);
   win.loadURL(fileurl);
-  win.setMenu(null);
 // Open the DevTools optionally:
   win.webContents.openDevTools();
-
-  // var python = require('child_process').spawn('python', ['hello.py']);
-  // python.stdout.on('data',function(data){
-  //   console.log("data: ",data.toString('utf8'));
-  //
-  //   console.log("PythonScript Completed")
-  // });
-  //
-
-
-  var some_arg = '';
-  PythonShell.run('hello.py', {args: [some_arg]}, function (err, results) {
-    if (err) throw err;
-    // results is an array consisting of messages collected during execution
-    console.log('results: %j', results);
-  })
-
+  win.setMenu(null);
 }
 
-function pyrun() {
-  var some_arg = '';
-  PythonShell.run('hello.py', {args: [some_arg]}, function (err, results) {
-    if (err) throw err;
-    // results is an array consisting of messages collected during execution
-    console.log('results: %j', results);
-  })
-}
-
-app.setAppUserModelId('Photo-Ai');
-app.on('ready', createWindow);
-app.on('window-all-closed', () => { if (process.platform !== 'darwin') { app.quit() } });
-app.on('activate', () => { if (win === null) { createWindow() } })
-app.on('ready', () => {
-  notify('Welcome!', { body: 'This is Hangman in Electron!' }, () => {
-    console.log('The notification got clicked on!')
-  })
-})
+  app.setAppUserModelId('Photo-Ai');
+  app.on('ready', createWindow);
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+      app.quit()
+    }
+  });
+  app.on('activate', () => {
+    if (win === null) {
+      createWindow()
+    }
+  });
+  app.on('ready', () => {
+    notify('Welcome!', {body: 'This is photo-editor in Electron!'}, () => {
+      console.log('The notification got clicked on!')
+    })
+  });
 
