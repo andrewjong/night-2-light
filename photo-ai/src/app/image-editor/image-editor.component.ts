@@ -152,8 +152,7 @@ export class ImageEditorComponent implements OnInit {
    */
   pushIntoStack(stack:Object[]) : void{
     let data = this.canvas.toJSON();
-    stack.push(data);
-    if(stack.length > 3)
+    if(stack.push(data) > 3)
       stack.shift();
   }
   
@@ -214,17 +213,6 @@ export class ImageEditorComponent implements OnInit {
   // }
   
 
-
-
-
-
-
-  
-  
-  
-  
-  
-
   /**
    * This will show the applyable crop area
    * @param event 
@@ -233,7 +221,6 @@ export class ImageEditorComponent implements OnInit {
     if(this.mainImageExists == false)
       return;
     this.canCrop = true;
-    this.pushIntoStack(this.undoStack); //this will push into the undo stack
     let topBorder :number;
     let leftBorder :number;
     let rightBorder :number;
@@ -306,6 +293,9 @@ export class ImageEditorComponent implements OnInit {
    * @param event 
    */
   crop(event) : void {
+    // Crop is pushed onto undoStack and resets redoStack
+    this.pushIntoStack(this.undoStack); 
+    this.redoStack = [];
     this.canvas.setViewportTransform([1,0,0,1,0,0]);
     let ImageEditor = this;
     //If the user rescales, then the cropping will follow the rescaling
@@ -346,6 +336,9 @@ export class ImageEditorComponent implements OnInit {
   rotate(number: number) : void {
     if(this.mainImageExists == false)
       return;
+    // Adds the previous rotation state into undo stack
+    this.pushIntoStack(this.undoStack);
+    this.redoStack = [];
     let currentAngle = this.mainImage.angle;
     this.mainImage.rotate((currentAngle + number) % 360);
     this.mainImage.setCoords(); 

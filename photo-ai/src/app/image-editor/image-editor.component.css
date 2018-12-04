@@ -78,7 +78,7 @@ The specific buttons styling
 }
 
 #camera-btn::after {
-    content:"Photo";
+    content:"Take Photo";
 }
 
 #convert-btn::after {
@@ -86,11 +86,11 @@ The specific buttons styling
 }
 
 #rotate-left-btn::after {
-    content:"Turn -90°";
+    content:"Turn CCW";
 }
 
 #rotate-right-btn::after {
-    content:"Turn 90°";
+    content:"Turn CW";
 }
 
 #tune-btn::after {
