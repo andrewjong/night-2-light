@@ -10,6 +10,7 @@ import {AppRoutingModule} from "./app-routing-module";
 import {ButtonModule, ConfirmDialogModule, FileUploadModule, SplitButtonModule, ToolbarModule} from "primeng/primeng";
 import {RouterModule} from "@angular/router";
 import {ngxLoadingAnimationTypes, NgxLoadingModule} from "ngx-loading";
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import {ngxLoadingAnimationTypes, NgxLoadingModule} from "ngx-loading";
     WebcamModule,
     NgxElectronModule,
     ConfirmDialogModule,
+    HttpClientModule
   ],
   exports: [RouterModule],
   providers: [],

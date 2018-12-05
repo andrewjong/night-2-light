@@ -1,12 +1,17 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import 'fabric';
 import 'jquery';
-import {ConfirmationService} from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import * as JSZip from 'jszip';
 import 'file-saver';
-import {Point} from 'fabric/fabric-impl';
+import { Point } from 'fabric/fabric-impl';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs'
+
 
 declare const fabric: any;
+declare function pyRun(input, outDir, brightnessFactor, callback): any;
+
 
 @Component({
   selector: 'app-image-editor',
@@ -33,7 +38,7 @@ export class ImageEditorComponent implements OnInit {
   private height: number;
   public ngxLoading = false;
 
-  constructor(private confirmationService: ConfirmationService) {}
+  constructor(private confirmationService: ConfirmationService, private httpClient: HttpClient) { }
 
   /**
    * This will allow to instantiate the canvas and will apply zoom onto canvas.
@@ -45,23 +50,23 @@ export class ImageEditorComponent implements OnInit {
       backgroundColor: 'rgb(0,0,0,.5)',
       selectionColor: 'grey',
       selectionLineWidth: 10
-      });
+    });
     this.canSave = false;
     this.mainImageExists = false;
     this.canCrop = false;
     this.isOriginalOrientation = true;
-    this.canvas.on('mouse:wheel', function(opt) {
-        const delta = opt.e.deltaY;
-        const pointer = this.getPointer(opt.e);
-        let zoom = this.getZoom();
-        zoom = zoom + delta / 200;
-        if (zoom > 20) { zoom = 20; }
-        if (zoom < 0.01) { zoom = 0.01; }
-        this.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
-        opt.e.preventDefault();
-        opt.e.stopPropagation();
-      });
-    }
+    this.canvas.on('mouse:wheel', function (opt) {
+      const delta = opt.e.deltaY;
+      const pointer = this.getPointer(opt.e);
+      let zoom = this.getZoom();
+      zoom = zoom + delta / 200;
+      if (zoom > 20) { zoom = 20; }
+      if (zoom < 0.01) { zoom = 0.01; }
+      this.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+      opt.e.preventDefault();
+      opt.e.stopPropagation();
+    });
+  }
 
   /**
    * This will allow the person to upload the file after clicking the button to trigger
@@ -77,49 +82,85 @@ export class ImageEditorComponent implements OnInit {
    */
   previewFile(event: any): void {
     const reader = new FileReader();
-    const file: Blob = event.target.files[0];
+    const file: any = event.target.files[0];
     console.log(file.type);
     // Need some sort of if-check here!
 
-    if (file.type.includes('ARW')) {
-      this.confirmationService.confirm({
-      message: 'Are you sure that you want to convert photo from dark to light?',
-      accept: () => {
-        this.ngxLoading = true;
-        // this.http.get("../data/navItems.json")
-        // Actual logic to perform a confirmation
-      },
-    });
-    }
 
-    reader.readAsDataURL(file);
+    const CONVERT_DIR = "converted"
+    console.log("FILE TYPE:", file.type)
+
+    if (file.type === "image/x-sony-arw") {
+      this.confirmationService.confirm({
+        message: 'Are you sure that you want to convert photo from dark to light?',
+        accept: () => {
+          this.ngxLoading = true;
+          // this.http.get("../data/navItems.json")
+          // Actual logic to perform a confirmation
+
+          const algorithmInput = file.path
+          console.log("algorithm input:", algorithmInput)
+
+          pyRun(algorithmInput, CONVERT_DIR, 100.0, (err, stdout, stderr) => {
+            const inform = err? console.error:console.log
+            inform(err)
+            inform(stdout)
+            inform(stderr)
+
+            if (err) {
+              console.error("ML script failed! See above for details.")
+            } else {
+              console.log("Algorithm finished!")
+
+              // get the converted file
+              const fileNameNoExtension = file.path.split("/").pop().slice(0, -4)
+              const convertedFileName = fileNameNoExtension + "_out.png"
+              const convertedFilePath = CONVERT_DIR + "/" + convertedFileName
+              console.log("Expected file name:", convertedFileName)
+
+              console.log("Reading buffer...")
+              const convertedBuffer = window['fs'].readFileSync(convertedFilePath)
+              console.log(convertedBuffer)
+              reader.readAsDataURL(new Blob([convertedBuffer.buffer]))
+            }
+          })
+
+        },
+      });
+    } else {
+      // case: not a RAW photo
+      console.log("Reading as normal image")
+      reader.readAsDataURL(file);
+    }
     const ImageEditor = this;
     const canvasHere = this.canvas;
     const MainImageExist = this.mainImageExists;
 
     reader.onload = function (loadevent: Event) {
+      ImageEditor.ngxLoading = false;
       const imageElement = reader.result;
-      const imgInstance = new fabric.Image.fromURL(imageElement, function(img) {
+      const imgInstance = new fabric.Image.fromURL(imageElement, function (img) {
         const image = img.set({
-            originX: 'left',
-            originY: 'top',
-            selectable: false
-          });
-          if (MainImageExist === false) {
-            ImageEditor.setMainImage(image);
-          } else {
-            const clearBtn = document.getElementById('clear-btn');
-            clearBtn.click();
-            ImageEditor.setMainImage(image);
-          }
-          canvasHere.add(image);
-          canvasHere.centerObject(image);
-          image.setCoords();
-          ImageEditor.saveOrientationCoords();
-          canvasHere.renderAll();
-          ImageEditor.canSave = true;
-          ImageEditor.isOriginalOrientation = true;
-        }); };
+          originX: 'left',
+          originY: 'top',
+          selectable: false
+        });
+        if (MainImageExist === false) {
+          ImageEditor.setMainImage(image);
+        } else {
+          const clearBtn = document.getElementById('clear-btn');
+          clearBtn.click();
+          ImageEditor.setMainImage(image);
+        }
+        canvasHere.add(image);
+        canvasHere.centerObject(image);
+        image.setCoords();
+        ImageEditor.saveOrientationCoords();
+        canvasHere.renderAll();
+        ImageEditor.canSave = true;
+        ImageEditor.isOriginalOrientation = true;
+      });
+    };
     this.mainImageExists = true;
     event.target.value = '';
   }
@@ -134,8 +175,10 @@ export class ImageEditorComponent implements OnInit {
     this.mainImage.rotate(-90);
     this.mainImage.setCoords();
     this.savedCoords['rotated'] = new fabric.Point(this.mainImage.left, (this.mainImage.top - this.mainImage.width));
-    this.savedBound['rotated'] = {tl: this.mainImage.aCoords.tr, tr:
-      this.mainImage.aCoords.br, br: this.mainImage.aCoords.bl, bl: this.mainImage.aCoords.tl};
+    this.savedBound['rotated'] = {
+      tl: this.mainImage.aCoords.tr, tr:
+        this.mainImage.aCoords.br, br: this.mainImage.aCoords.bl, bl: this.mainImage.aCoords.tl
+    };
     this.mainImage.rotate(0);
     this.mainImage.setCoords();
   }
@@ -170,7 +213,7 @@ export class ImageEditorComponent implements OnInit {
     if (this.undoStack.length > 0) {
       this.pushIntoStack(this.redoStack);
       const oldState = this.undoStack.pop();
-      this.canvas.loadFromJSON(oldState, this.canvas.renderAll.bind(this.canvas), function(o, object) {
+      this.canvas.loadFromJSON(oldState, this.canvas.renderAll.bind(this.canvas), function (o, object) {
         ImageEditor.setMainImage(object);
       });
     }
@@ -187,7 +230,7 @@ export class ImageEditorComponent implements OnInit {
     if (this.redoStack.length > 0) {
       this.pushIntoStack(this.undoStack);
       const oldState = this.redoStack.pop();
-      this.canvas.loadFromJSON(oldState, this.canvas.renderAll.bind(this.canvas), function(o, object) {
+      this.canvas.loadFromJSON(oldState, this.canvas.renderAll.bind(this.canvas), function (o, object) {
         ImageEditor.setMainImage(object);
       });
     }
@@ -259,7 +302,7 @@ export class ImageEditorComponent implements OnInit {
       top: this.top,
       lockRotation: true
     });
-    clippath.on('moved', function() {
+    clippath.on('moved', function () {
       if (this.aCoords.tl.y < topBorder) {
         this.top = topBorder;
       }
@@ -316,7 +359,7 @@ export class ImageEditorComponent implements OnInit {
       height: cropHeight
     });
     // This is clipping where the origin is the center of the main image!
-    const imgInstance = new fabric.Image.fromURL(dataUrl, function(img) {
+    const imgInstance = new fabric.Image.fromURL(dataUrl, function (img) {
       const image = img.set({
         originX: 'left',
         originY: 'top',
@@ -420,8 +463,8 @@ export class ImageEditorComponent implements OnInit {
 
       const imageData = dataUrl.split(',')[1];
       const zip = new JSZip();
-      zip.file('download.png', imageData, {base64: true});
-      zip.generateAsync({type: 'blob'}).then(function(content) {
+      zip.file('download.png', imageData, { base64: true });
+      zip.generateAsync({ type: 'blob' }).then(function (content) {
         saveAs(content, 'image.zip');
       });
     }

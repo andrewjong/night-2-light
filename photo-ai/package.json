@@ -16,6 +16,7 @@
     "package-mac": "electron-packager . photo-ai --overwrite --platform=darwin --arch=x64",
     "package-linux": "electron-packager . photo-ai --platform=linux --arch=x64 --overwrite"
   },
+  "browser": { "fs": false, "path": false, "os": false },
   "private": true,
   "dependencies": {
     "@angular/animations": "^7.0.0",
