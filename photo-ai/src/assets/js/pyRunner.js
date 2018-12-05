@@ -1,4 +1,5 @@
-let { shelljs } = require("shelljs");
+const exec = require('child_process').exec;
+const path = require('path');
 
 function pyRun(input, output_dir, ratio = 100, callback) {
   console.log('Machine Learning inference started')
@@ -6,11 +7,10 @@ function pyRun(input, output_dir, ratio = 100, callback) {
   if (callback === undefined) {
     callback = () => console.log("Inference done!")
   }
+  console.log("__DIRNAME", path.resolve(__dirname))
 
-  if (shelljs.exec(
-    `../inference_Sony/inference_Sony ${input} -o ${output_dir} -r ${ratio}`,
-    callback = callback
-  ).code !== 0) {
-    console.error("Inference script failed!")
-  }
+  const cmd = `${path.resolve(__dirname)}/../../src/assets/inference_Sony/inference_Sony ${input} -o ${output_dir} -r ${ratio}`
+  console.log(cmd)
+
+  exec(cmd, callback = callback);
 }

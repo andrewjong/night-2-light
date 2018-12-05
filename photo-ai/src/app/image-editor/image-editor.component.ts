@@ -8,6 +8,7 @@ import { Point } from 'fabric/fabric-impl';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs'
 
+
 declare const fabric: any;
 declare function pyRun(input, outDir, brightnessFactor, callback): any;
 
@@ -96,16 +97,27 @@ export class ImageEditorComponent implements OnInit {
           this.ngxLoading = true;
           // this.http.get("../data/navItems.json")
           // Actual logic to perform a confirmation
-          const fileNameNoExtension = file.path.split("/").pop().slice(0, -4)
-          const convertedFileName = fileNameNoExtension + "_out.png"
-          const convertedFilePath = CONVERT_DIR + "/" + convertedFileName
-          console.log("Expected file name:", convertedFileName)
 
           const algorithmInput = file.path
           console.log("algorithm input:", algorithmInput)
 
-          pyRun(algorithmInput, CONVERT_DIR, 300, () => {
-            console.log("Algorithm finished!")
+          pyRun(algorithmInput, CONVERT_DIR, 100.0, (err, stdout, stderr) => {
+            if (err) {
+              console.error("ML script failed! See below for details.")
+              console.error(err)
+              console.error(stdout)
+              console.error(stderr)
+            } else {
+              console.log(err)
+              console.log(stdout)
+              console.log(stderr)
+              console.log("Algorithm finished!")
+
+              const fileNameNoExtension = file.path.split("/").pop().slice(0, -4)
+              const convertedFileName = fileNameNoExtension + "_out.png"
+              const convertedFilePath = CONVERT_DIR + "/" + convertedFileName
+              console.log("Expected file name:", convertedFileName)
+            }
           })
 
         },
