@@ -70,14 +70,16 @@ export class ImageEditorComponent implements OnInit {
       opt.e.stopPropagation();
     });
     this.canvas.on('mouse:up', function (e) {
-      CLASS_CTX.panning = false;
+      if(CLASS_CTX.mainImageExists && !CLASS_CTX.canCrop)
+        CLASS_CTX.panning = false;
     });
 
     this.canvas.on('mouse:down', function (e) {
-      CLASS_CTX.panning = true;
+      if (CLASS_CTX.mainImageExists && !CLASS_CTX.canCrop)
+        CLASS_CTX.panning = true;
     });
     this.canvas.on('mouse:move', function (e) {
-      if (CLASS_CTX.panning && e && e.e) {
+      if (!CLASS_CTX.canCrop && CLASS_CTX.panning && e && e.e) {
         const units = 10;
         const delta = new fabric.Point(e.e.movementX, e.e.movementY);
         CLASS_CTX.canvas.relativePan(delta);
