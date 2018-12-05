@@ -211,7 +211,6 @@ export class ImageEditorComponent implements OnInit {
    */
   pushIntoStack(stack: Object[]): void {
     const data = this.canvas.toJSON();
-    stack.push(data);
     if (stack.length > 3) {
       stack.shift();
     }
@@ -274,7 +273,6 @@ export class ImageEditorComponent implements OnInit {
   //   }
   // }
 
-
   /**
    * This will show the applyable crop area
    *
@@ -284,14 +282,13 @@ export class ImageEditorComponent implements OnInit {
       return;
     }
     this.canCrop = true;
-    this.pushIntoStack(this.undoStack); // this will push into the undo stack
-    let topBorder: number;
-    let leftBorder: number;
-    let rightBorder: number;
-    let bottomBorder: number;
-    if (!this.isOriginalOrientation) {
-      this.left = this.savedCoords['rotated'].x;
-      this.top = this.savedCoords['rotated'].y;
+    let topBorder :number;
+    let leftBorder :number;
+    let rightBorder :number;
+    let bottomBorder :number;
+    if(!this.isOriginalOrientation){
+      this.left = this.savedCoords["rotated"].x;
+      this.top = this.savedCoords["rotated"].y;
       this.width = this.mainImage.height;
       this.height = this.mainImage.width;
       topBorder = this.savedBound['rotated'].tl.y;
@@ -360,19 +357,22 @@ export class ImageEditorComponent implements OnInit {
    * so it can be rerendered.
    *
    */
-  crop(event): void {
-    this.canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
-    const ImageEditor = this;
-    // If the user rescales, then the cropping will follow the rescaling
-    const cropWidth = this.clipPath.width * this.clipPath.scaleX;
-    const cropHeight = this.clipPath.height * this.clipPath.scaleY;
-
-    const dataUrl = this.canvas.toDataURL({
-      format: 'png',
-      left: this.clipPath.left,
-      top: this.clipPath.top,
-      width: cropWidth,
-      height: cropHeight
+  crop(event) : void {
+    // Crop is pushed onto undoStack and resets redoStack
+    this.pushIntoStack(this.undoStack); 
+    this.redoStack = [];
+    this.canvas.setViewportTransform([1,0,0,1,0,0]);
+    let ImageEditor = this;
+    //If the user rescales, then the cropping will follow the rescaling
+    let cropWidth = this.clipPath.width*this.clipPath.scaleX; 
+    let cropHeight = this.clipPath.height*this.clipPath.scaleY;
+    
+    let dataUrl = this.canvas.toDataURL({
+      format:'png',
+      left:this.clipPath.left,
+      top:this.clipPath.top,
+      width:cropWidth,
+      height:cropHeight
     });
     // This is clipping where the origin is the center of the main image!
     const imgInstance = new fabric.Image.fromURL(dataUrl, function (img) {
@@ -400,8 +400,10 @@ export class ImageEditorComponent implements OnInit {
   rotate(number: number): void {
     if (this.mainImageExists === false) {
       return;
-    }
-    const currentAngle = this.mainImage.angle;
+    // Adds the previous rotation state into undo stack
+    this.pushIntoStack(this.undoStack);
+    this.redoStack = [];
+    let currentAngle = this.mainImage.angle;
     this.mainImage.rotate((currentAngle + number) % 360);
     this.mainImage.setCoords();
     if (Math.abs(this.mainImage.angle) === 0 || Math.abs(this.mainImage.angle) === 180) {
