@@ -7,6 +7,7 @@ import 'file-saver';
 import { Point } from 'fabric/fabric-impl';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs'
+const fs = require('fs')
 
 
 declare const fabric: any;
