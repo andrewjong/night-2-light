@@ -12,7 +12,7 @@
   <button id="upload-btn" (click)="uploadFile($event)" *ngIf="!canCrop">
     <span class="material-icons">publish</span>
   </button>
-  <input id="upload" type="file" accept="image/*" hidden="hidden" (change)="previewFile($event)" *ngIf="!canCrop"/>
+  <input id="upload" type="file" hidden="hidden" (change)="previewFile($event)" *ngIf="!canCrop"/>
 
   <button id="camera-btn" value="Camera" *ngIf="!canCrop">
     <span class="material-icons">camera</span>
