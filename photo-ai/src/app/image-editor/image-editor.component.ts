@@ -8,7 +8,6 @@ import { Point } from 'fabric/fabric-impl';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs'
 
-
 declare const fabric: any;
 declare function pyRun(input, outDir, brightnessFactor, callback): any;
 

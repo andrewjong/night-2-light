@@ -4,8 +4,9 @@ const path = require('path');
 window.fs = require('fs');
 window.os = require('os');
 
+const EXECUTABLE_HOME = `${path.resolve(__dirname)}/../../src/assets/inference_Sony/`
 
-function pyRun(input, output_dir, ratio = 100, callback) {
+function pyRun(input, outDir, ratio = 100, callback) {
   console.log('Machine Learning inference started')
 
   if (callback === undefined) {
@@ -13,8 +14,12 @@ function pyRun(input, output_dir, ratio = 100, callback) {
   }
   console.log("__DIRNAME", path.resolve(__dirname))
 
-  const cmd = `${path.resolve(__dirname)}/../../src/assets/inference_Sony/inference_Sony ${input} -o ${output_dir} -r ${ratio}`
+  const out = path.resolve(__dirname, "..", "..", outDir)
+
+  const cmd = `./inference_Sony ${input} -o ${out} -r ${ratio}`
   console.log(cmd)
 
-  exec(cmd, callback = callback);
+  exec(cmd, options = { cwd: EXECUTABLE_HOME }, callback = callback);
 }
+
+module.exports = { EXECUTABLE_HOME: EXECUTABLE_HOME }
