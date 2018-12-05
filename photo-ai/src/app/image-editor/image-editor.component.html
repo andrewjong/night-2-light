@@ -14,14 +14,6 @@
   </button>
   <input id="upload" type="file" hidden="hidden" (change)="previewFile($event)" *ngIf="!canCrop"/>
 
-  <button id="camera-btn" value="Camera" *ngIf="!canCrop">
-    <span class="material-icons">camera</span>
-  </button>
-
-  <button id="convert-btn" value="Convert" *ngIf="!canCrop">
-    <span class="material-icons">wb_sunny</span>
-  </button>
-
   <button id="rotate-left-btn" value="Turn Left" (click)="rotate(-90)" *ngIf="!canCrop">
     <span class="material-icons">rotate_left</span>
   </button>
