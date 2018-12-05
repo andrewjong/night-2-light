@@ -36,8 +36,9 @@ export class ImageEditorComponent implements OnInit {
   private width: number;
   private height: number;
   public ngxLoading = false;
+  private panning = false;
 
-  constructor(private confirmationService: ConfirmationService, private httpClient: HttpClient) { }
+  constructor(private confirmationService: ConfirmationService) { }
 
   /**
    * This will allow to instantiate the canvas and will apply zoom onto canvas.
@@ -45,11 +46,14 @@ export class ImageEditorComponent implements OnInit {
    * Top mean a certain amount of pixels form the top of the object or the canvas
    */
   ngOnInit() {
+    const CLASS_CTX = this
+
     this.canvas = new fabric.Canvas('image-view', {
       backgroundColor: 'rgb(0,0,0,.5)',
-      selectionColor: 'grey',
-      selectionLineWidth: 10
+      // selectionColor: 'grey',
+      // selectionLineWidth: 10
     });
+    this.canvas.selection = false;
     this.canSave = false;
     this.mainImageExists = false;
     this.canCrop = false;
@@ -64,6 +68,20 @@ export class ImageEditorComponent implements OnInit {
       this.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
       opt.e.preventDefault();
       opt.e.stopPropagation();
+    });
+    this.canvas.on('mouse:up', function (e) {
+      CLASS_CTX.panning = false;
+    });
+
+    this.canvas.on('mouse:down', function (e) {
+      CLASS_CTX.panning = true;
+    });
+    this.canvas.on('mouse:move', function (e) {
+      if (CLASS_CTX.panning && e && e.e) {
+        const units = 10;
+        const delta = new fabric.Point(e.e.movementX, e.e.movementY);
+        CLASS_CTX.canvas.relativePan(delta);
+      }
     });
   }
 
@@ -82,12 +100,9 @@ export class ImageEditorComponent implements OnInit {
   previewFile(event: any): void {
     const reader = new FileReader();
     const file: any = event.target.files[0];
-    console.log(file.type);
-    // Need some sort of if-check here!
-
+    console.log("FILE TYPE:", file.type)
 
     const CONVERT_DIR = "converted"
-    console.log("FILE TYPE:", file.type)
 
     if (file.type === "image/x-sony-arw") {
       this.confirmationService.confirm({
@@ -100,8 +115,8 @@ export class ImageEditorComponent implements OnInit {
           const algorithmInput = file.path
           console.log("algorithm input:", algorithmInput)
 
-          pyRun(algorithmInput, CONVERT_DIR, 100.0, (err, stdout, stderr) => {
-            const inform = err? console.error:console.log
+          pyRun(algorithmInput, CONVERT_DIR, 200.0, (err, stdout, stderr) => {
+            const inform = err ? console.error : console.log
             inform(err)
             inform(stdout)
             inform(stderr)
