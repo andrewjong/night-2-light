@@ -1,74 +1,68 @@
-<div id="logo">
-  <span class="material-icons">mood</span>
-</div>
+<!--<div id="logo">-->
+<!--<span class="material-icons">mood</span>-->
+<!--</div>-->
 
 
+<ngx-loading [show]="ngxLoading"></ngx-loading>
 <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle" width="425"></p-confirmDialog>
 <!--<button type="text" (click)="confirm()" pButton icon="pi pi-check" label="Confirm"></button>-->
 
 
 <div class="center">
-    <button id="upload-btn" (click)="uploadFile($event)" *ngIf="!canCrop">
-      <span class="material-icons">publish</span>
-    </button>
-    <input id="upload" type="file" accept="image/*" hidden="hidden" (change)="previewFile($event)" *ngIf="!canCrop"/>
+  <button id="upload-btn" (click)="uploadFile($event)" *ngIf="!canCrop">
+    <span class="material-icons">publish</span>
+  </button>
+  <input id="upload" type="file" hidden="hidden" (change)="previewFile($event)" *ngIf="!canCrop"/>
 
-    <button id="camera-btn" value="Camera" *ngIf="!canCrop">
-        <span class="material-icons">camera</span>
-      </button>
+  <button id="rotate-left-btn" value="Turn Left" (click)="rotate(-90)" *ngIf="!canCrop">
+    <span class="material-icons">rotate_left</span>
+  </button>
 
-    <button id="convert-btn" value="Convert" *ngIf="!canCrop">
-        <span class="material-icons">wb_sunny</span>
-      </button>
+  <button id="rotate-right-btn" value="Turn Right" (click)="rotate(90)" *ngIf="!canCrop">
+    <span class="material-icons">rotate_right</span>
+  </button>
 
-      <button id="rotate-left-btn" value="Turn Left" (click)="rotate(-90)" *ngIf="!canCrop">
-        <span class="material-icons">rotate_left</span>
-      </button>
+  <button id="tune-btn" value="Tune" *ngIf="!canCrop" >
+    <span class="material-icons">tune</span>
+  </button>
 
-      <button id="rotate-right-btn" value="Turn Right" (click)="rotate(90)" *ngIf="!canCrop">
-        <span class="material-icons">rotate_right</span>
-      </button>
+  <button id="crop-btn" value="Crop" (click)="showCropArea($event)" *ngIf="!canCrop" >
+    <span class="material-icons">crop</span>
+  </button>
 
-      <button id="tune-btn" value="Tune" *ngIf="!canCrop" >
-          <span class="material-icons">tune</span>
-        </button>
+  <button id="apply-btn" value="Apply Crop" (click)="crop($event)" *ngIf="canCrop">
+    <span class="material-icons">check</span>
+  </button>
 
-    <button id="crop-btn" value="Crop" (click)="showCropArea($event)" *ngIf="!canCrop" >
-      <span class="material-icons">crop</span>
-    </button>
+  <button id="removeCrop-btn" value="Exit" (click)="removeCropArea($event)" *ngIf="canCrop">
+    <span class="material-icons">clear</span>
+  </button>
 
-    <button id="apply-btn" value="Apply Crop" (click)="crop($event)" *ngIf="canCrop">
-      <span class="material-icons">check</span>
-    </button>
+  <button id="undo-btn" value="Undo" (click)="undo($event)" *ngIf="!canCrop">
+    <span class="material-icons">undo</span>
+  </button>
 
-    <button id="removeCrop-btn" value="Exit" (click)="removeCropArea($event)" *ngIf="canCrop">
-      <span class="material-icons">clear</span>
-    </button>
-
-    <button id="undo-btn" value="Undo" (click)="undo($event)" *ngIf="!canCrop">
-      <span class="material-icons">undo</span>
-    </button>
-    
-    <button id="redo-btn" value="Redo" (click)="redo($event)" *ngIf="!canCrop">
-      <span class="material-icons">redo</span>
-    </button>
-
-    
-    <button id="clear-btn" value="Remove" (click)="clear($event)" *ngIf="!canCrop">
-      <span class="material-icons">clear</span>
-    </button>
-  </div>
-  
+  <button id="redo-btn" value="Redo" (click)="redo($event)" *ngIf="!canCrop">
+    <span class="material-icons">redo</span>
+  </button>
 
 
-  <div class="right">
-    <button id="save-btn" value="Save" (click)="saveFile($event)" *ngIf="!canCrop">
-      <span class="material-icons">save</span>
-    </button>    
-  </div>
+  <button id="clear-btn" value="Remove" (click)="clear($event)" *ngIf="!canCrop">
+    <span class="material-icons">clear</span>
+  </button>
+</div>
+
+
+
+<div class="right">
+  <button id="save-btn" value="Save" (click)="saveFile($event)" *ngIf="!canCrop">
+    <span class="material-icons">save</span>
+  </button>
+</div>
 
 <div class="canvas-container">
-  <canvas id="image-view" width="1600px" height="800px" ></canvas>
+  <canvas id="image-view" width="1600px" height="800px" >
+  </canvas>
 </div>
 
 
