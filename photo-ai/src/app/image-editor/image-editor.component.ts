@@ -7,7 +7,6 @@ import 'file-saver';
 import { Point } from 'fabric/fabric-impl';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs'
-const fs = require('fs')
 
 
 declare const fabric: any;
@@ -103,21 +102,26 @@ export class ImageEditorComponent implements OnInit {
           console.log("algorithm input:", algorithmInput)
 
           pyRun(algorithmInput, CONVERT_DIR, 100.0, (err, stdout, stderr) => {
+            const inform = err? console.error:console.log
+            inform(err)
+            inform(stdout)
+            inform(stderr)
+
             if (err) {
-              console.error("ML script failed! See below for details.")
-              console.error(err)
-              console.error(stdout)
-              console.error(stderr)
+              console.error("ML script failed! See above for details.")
             } else {
-              console.log(err)
-              console.log(stdout)
-              console.log(stderr)
               console.log("Algorithm finished!")
 
+              // get the converted file
               const fileNameNoExtension = file.path.split("/").pop().slice(0, -4)
               const convertedFileName = fileNameNoExtension + "_out.png"
               const convertedFilePath = CONVERT_DIR + "/" + convertedFileName
               console.log("Expected file name:", convertedFileName)
+
+              console.log("Reading buffer...")
+              const convertedBuffer = window['fs'].readFileSync(convertedFilePath)
+              console.log(convertedBuffer)
+              reader.readAsDataURL(new Blob([convertedBuffer.buffer]))
             }
           })
 
@@ -133,6 +137,7 @@ export class ImageEditorComponent implements OnInit {
     const MainImageExist = this.mainImageExists;
 
     reader.onload = function (loadevent: Event) {
+      ImageEditor.ngxLoading = false;
       const imageElement = reader.result;
       const imgInstance = new fabric.Image.fromURL(imageElement, function (img) {
         const image = img.set({

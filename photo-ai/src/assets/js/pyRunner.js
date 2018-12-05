@@ -1,6 +1,10 @@
 const exec = require('child_process').exec;
 const path = require('path');
 
+window.fs = require('fs');
+window.os = require('os');
+
+
 function pyRun(input, output_dir, ratio = 100, callback) {
   console.log('Machine Learning inference started')
 
