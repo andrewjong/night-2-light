@@ -85,16 +85,11 @@ export class ImageEditorComponent implements OnInit {
     console.log(file.type);
     // Need some sort of if-check here!
 
-    const getImage = (imagePath): Observable<Blob> => {
-      return this.httpClient
-        .get(`${imagePath}`, {
-          responseType: "blob"
-        });
-    }
 
     const CONVERT_DIR = "converted"
+    console.log("FILE TYPE:", file.type)
 
-    if (file.type.includes('ARW')) {
+    if (file.type === "image/x-sony-arw") {
       this.confirmationService.confirm({
         message: 'Are you sure that you want to convert photo from dark to light?',
         accept: () => {
@@ -105,17 +100,21 @@ export class ImageEditorComponent implements OnInit {
           const convertedFileName = fileNameNoExtension + "_out.png"
           const convertedFilePath = CONVERT_DIR + "/" + convertedFileName
           console.log("Expected file name:", convertedFileName)
-          const algorithmInput = getImage(convertedFilePath)
-          console.log("algorithm input:",algorithmInput)
+
+          const algorithmInput = file.path
+          console.log("algorithm input:", algorithmInput)
+
           pyRun(algorithmInput, CONVERT_DIR, 300, () => {
             console.log("Algorithm finished!")
           })
-          
+
         },
       });
+    } else {
+      // case: not a RAW photo
+      console.log("Reading as normal image")
+      reader.readAsDataURL(file);
     }
-
-    reader.readAsDataURL(file);
     const ImageEditor = this;
     const canvasHere = this.canvas;
     const MainImageExist = this.mainImageExists;
