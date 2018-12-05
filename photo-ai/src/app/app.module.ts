@@ -38,7 +38,6 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
     WebcamModule,
     NgxElectronModule,
     ConfirmDialogModule,
-    HttpClient,
     HttpClientModule
   ],
   exports: [RouterModule],
