@@ -211,6 +211,7 @@ export class ImageEditorComponent implements OnInit {
    */
   pushIntoStack(stack: Object[]): void {
     const data = this.canvas.toJSON();
+    stack.push(data)
     if (stack.length > 3) {
       stack.shift();
     }
@@ -229,6 +230,7 @@ export class ImageEditorComponent implements OnInit {
       this.pushIntoStack(this.redoStack);
       const oldState = this.undoStack.pop();
       this.canvas.loadFromJSON(oldState, this.canvas.renderAll.bind(this.canvas), function (o, object) {
+        object.set('selectable',false);
         ImageEditor.setMainImage(object);
       });
     }
@@ -246,6 +248,7 @@ export class ImageEditorComponent implements OnInit {
       this.pushIntoStack(this.undoStack);
       const oldState = this.redoStack.pop();
       this.canvas.loadFromJSON(oldState, this.canvas.renderAll.bind(this.canvas), function (o, object) {
+        object.set('selectable',false);
         ImageEditor.setMainImage(object);
       });
     }
@@ -398,7 +401,7 @@ export class ImageEditorComponent implements OnInit {
    * This will allow the image to rotate
    */
   rotate(number: number): void {
-    if (this.mainImageExists === false) {
+    if (this.mainImageExists === false) 
       return;
     // Adds the previous rotation state into undo stack
     this.pushIntoStack(this.undoStack);
