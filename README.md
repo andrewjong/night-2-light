@@ -3,5 +3,5 @@ San Jose State University, CS 160 Software Engineering class project. See the Wi
 
 Collaborators (alphabetical): Andrew Jong, Justin Fabricius, Victor La, Vivian Hoang.
 
-Project Demo:
+## Project Demo:  
 ![](demo.gif)
