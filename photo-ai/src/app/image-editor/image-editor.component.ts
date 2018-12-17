@@ -254,27 +254,7 @@ export class ImageEditorComponent implements OnInit {
     }
   }
 
-  //
-  //
-  // /**
-  //  * This will save the image from the canvas
-  //  *
-  //  */
-  // saveFile(event:any): void {
-  //   this.canvas.setViewportTransform([1,0,0,1,0,0]);
-  //   if(this.canSave){
-  //       let dataUrl = this.canvas.toDataURL({
-  //         format:'png',
-  //         left:this.mainImage.left,
-  //         top:this.mainImage.top,
-  //         width:this.mainImage.width,
-  //         height:this.mainImage.height,
-  //       });
-  //       const dlBtn = document.getElementById("save");
-  //       dlBtn.setAttribute("href",dataUrl);
-  //
-  //   }
-  // }
+
 
   /**
    * This will show the applyable crop area
