@@ -3,7 +3,6 @@ import {ImageEditorComponent} from './image-editor/image-editor.component';
 import {NgxElectronModule} from 'ngx-electron';
 import {AppComponent} from "./app.component";
 import {NgModule} from "@angular/core";
-import {HomeComponent} from "./home/home.component";
 import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {AppRoutingModule} from "./app-routing-module";
@@ -15,7 +14,6 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
     ImageEditorComponent,
   ],
   imports: [
