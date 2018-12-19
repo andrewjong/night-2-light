@@ -5,7 +5,9 @@ Collaborators (alphabetical): Andrew Jong, Justin Fabricius, Victor La, Vivian H
 
 ## Project Demo:  
 ![](conversion_demo.gif)
+
 The above gif demonstrates the conversion of a dark to bright photo. (Note the flickering is not from our application, but from the video recording software).
 
 ![](edit_demo.gif)
+
 This gif demonstrates the provided image editing functions.
