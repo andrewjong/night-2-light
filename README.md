@@ -1,7 +1,7 @@
 # Night2Light
 We present a user-friendly interface to easily convert dark, underexposed raw photos to brightly lit png images. Users would like a convenient way to convert their night images without turning them into grainy photos. With our approach, a user may complete this task with the simple click of a button. Our standalone desktop application also provides additional image editing functions for user convenience, should the user wish to modify their converted photo. Because our application is standalone, its functionality will continue to work indefinitely without the need to maintain a server.
 
-Algorithm credits to [Learning to See in the Dark]https://github.com/cchen156/Learning-to-See-in-the-Dark/issues.
+Algorithm credits to [Learning to See in the Dark](https://github.com/cchen156/Learning-to-See-in-the-Dark/);
 Chen Chen, Qifeng Chen, Jia Xu, and Vladlen Koltun, "Learning to See in the Dark", in CVPR, 2018.
 
 Please see the wiki for more information on the project.
